@@ -18,6 +18,7 @@
 	let sorted;
 	let grouped;
 	let selected;
+	let checkedOrder= {};
 	// const groupBy = (item) => item.CATEGORY;
 
 	onMount(async () => {
@@ -41,21 +42,26 @@
 				'https://gist.githubusercontent.com/henryjameslau/76f038ec284f08d65a3b224986ef57f3/raw/96ac1ccbbf88de2733aac4f1184a57ee78e3a8c5/annualgrowth.csv',
 				autoType
 			));
+
 		sorted = items.sort(
-			(a, b) => a.CATEGORY.localeCompare(b.CATEGORY) || a.ITEM_DESC.localeCompare(b.ITEM_DESC)
+		 	(a, b) => a['SUB CATEGORY 1'].toString().localeCompare(b['SUB CATEGORY 1']) ||a.ITEM_DESC.localeCompare(b.ITEM_DESC)
 		);
 
 		grouped = groups(items, (d) => d['SUB CATEGORY 1']);
-		console.log(grouped);
+
 	});
-    $: console.log(isChecked)
-	$: selected = Object.entries(isChecked).filter((d) => d[1] == true);
-	$: console.log(selected);
+
+	$: selected = Object.entries(isChecked).filter(d=>d[1]==true);
+	$: selectedOrdered=selected.map(d=>[...d,checkedOrder[d[0]]]).sort((a,b)=>a[2]-b[2])
+	// $: console.log(selectedOrdered)
 
     function removeItem(id){
         isChecked[id]=false;
     }
 
+	function handleChange(){
+		checkedOrder[this.getAttribute('id')]=new Date().getTime()
+	}
 </script>
 
 <h1>Add items to your basket</h1>
@@ -92,7 +98,7 @@
 			<div class="flex">
 				{#each groups[1] as item}
 					<div class="item">
-						<input type="checkbox" id={item.ITEM_ID} bind:checked={isChecked[item.ITEM_ID]} />
+						<input type="checkbox" id={item.ITEM_ID} on:change={handleChange} bind:checked={isChecked[item.ITEM_ID]} />
 						<label for={item.ITEM_ID}
 							><span class="bold">{item.ITEM_DESC}</span>
 							{item['WEIGHT\\SIZE'] ? item['WEIGHT\\SIZE'] : ''}</label
@@ -107,7 +113,7 @@
 {#if selected}
 	<div id="results">
 		<h2>Your selected items</h2>
-		{#each selected as item}
+		{#each selectedOrdered as item}
 			<p>Name: {items.filter((d) => d.ITEM_ID == item[0])[0]['ITEM_DESC']}</p>
 			<p>Weight or size: {items.filter((d) => d.ITEM_ID == item[0])[0]['WEIGHT\\SIZE']}</p>
 			<p>
@@ -168,3 +174,10 @@
         margin:0;
     }
 </style>
+
+
+<svelte:head>
+	<meta name="robots" content="noindex" />
+	<meta name="googlebot" content="indexifembedded" />
+
+</svelte:head>
