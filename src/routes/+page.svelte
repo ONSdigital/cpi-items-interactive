@@ -6,6 +6,9 @@
 	import Select from 'svelte-select';
 	import { format } from 'd3-format';
 	import { timeParse, timeFormat } from 'd3-time-format';
+	import { slide } from 'svelte/transition';
+	import {quintOut} from 'svelte/easing';
+	import { crossfade } from 'svelte/transition';
 
 	let chained;
 	let items;
@@ -20,6 +23,24 @@
 	let selected;
 	let checkedOrder= {};
 	// const groupBy = (item) => item.CATEGORY;
+
+	const [send, receive] = crossfade({
+		duration: d => Math.sqrt(d * 200),
+
+		fallback(node, params) {
+			const style = getComputedStyle(node);
+			const transform = style.transform === 'none' ? '' : style.transform;
+
+			return {
+				duration: 600,
+				easing: quintOut,
+				css: t => `
+					transform: ${transform} scale(${t});
+					opacity: ${t}
+				`
+			};
+		}
+	});
 
 	onMount(async () => {
 		(chained = await csv(
@@ -52,8 +73,9 @@
 	});
 
 	$: selected = Object.entries(isChecked).filter(d=>d[1]==true);
-	$: selectedOrdered=selected.map(d=>[...d,checkedOrder[d[0]]]).sort((a,b)=>a[2]-b[2])
-	// $: console.log(selectedOrdered)
+	$: console.log(selected.map(e=>+e[0]))
+	$: selectedOrdered=selected.map(d=>[...d,checkedOrder[d[0]]]).sort((a,b)=>b[2]-a[2])
+	$: if(grouped)console.log(grouped[0][1].filter(e=>!selected.map(e=>+e[0]).includes(e.ITEM_ID)))
 
     function removeItem(id){
         isChecked[id]=false;
@@ -96,8 +118,8 @@
 		{#each grouped as groups}
 			<h3>{groups[0]}</h3>
 			<div class="flex">
-				{#each groups[1] as item}
-					<div class="item">
+				{#each groups[1].filter(e=>!selected.map(e=>+e[0]).includes(e.ITEM_ID)) as item(item.ITEM_ID)}
+					<div class="item" in:receive="{{key: item.ITEM_ID}}" out:send="{{key: item.ITEM_ID}}">
 						<input type="checkbox" id={item.ITEM_ID} on:change={handleChange} bind:checked={isChecked[item.ITEM_ID]} />
 						<label for={item.ITEM_ID}
 							><span class="bold">{item.ITEM_DESC}</span>
@@ -113,32 +135,35 @@
 {#if selected}
 	<div id="results">
 		<h2>Your selected items</h2>
-		{#each selectedOrdered as item}
-			<p>Name: {items.filter((d) => d.ITEM_ID == item[0])[0]['ITEM_DESC']}</p>
-			<p>Weight or size: {items.filter((d) => d.ITEM_ID == item[0])[0]['WEIGHT\\SIZE']}</p>
-			<p>
-				Average price: £{format(',.2f')(
-					avgprice.filter((d) => d.ITEM_ID == item[0])[0][
-						avgprice.columns[avgprice.columns.length - 1]
-					]
-				)}
-			</p>
-			<p>
-				Monthly growth: {format('.1f')(
-					monthlygrowth.filter((d) => d.ITEM_ID == item[0])[0][
-						monthlygrowth.columns[monthlygrowth.columns.length - 1]
-					]
-				)}%
-			</p>
-			<p>
-				Annual growth: {format('.1f')(
-					annualgrowth.filter((d) => d.ITEM_ID == item[0])[0][
-						annualgrowth.columns[annualgrowth.columns.length - 1]
-					]
-				)}%
-			</p>
-            <button on:click={removeItem(item[0])}>Remove</button>
-			<hr />
+		{#each selectedOrdered as item(item[0])}
+			<div in:receive="{{key: item.ITEM_ID}}" out:send="{{key: item.ITEM_ID}}">
+				<p>Name: {items.filter((d) => d.ITEM_ID == item[0])[0]['ITEM_DESC']}</p>
+				<p>Weight or size: {items.filter((d) => d.ITEM_ID == item[0])[0]['WEIGHT\\SIZE']}</p>
+				<p>
+					Average price: £{format(',.2f')(
+						avgprice.filter((d) => d.ITEM_ID == item[0])[0][
+							avgprice.columns[avgprice.columns.length - 1]
+						]
+					)}
+				</p>
+				<p>
+					Monthly growth: {format('.1f')(
+						monthlygrowth.filter((d) => d.ITEM_ID == item[0])[0][
+							monthlygrowth.columns[monthlygrowth.columns.length - 1]
+						]
+					)}%
+				</p>
+				<p>
+					Annual growth: {format('.1f')(
+						annualgrowth.filter((d) => d.ITEM_ID == item[0])[0][
+							annualgrowth.columns[annualgrowth.columns.length - 1]
+						]
+					)}%
+				</p>
+				<button on:click={removeItem(item[0])}>Remove</button>
+				<hr />
+			</div>
+			
 		{/each}
 	</div>
 {/if}
