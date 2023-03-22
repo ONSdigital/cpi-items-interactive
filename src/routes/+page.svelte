@@ -9,19 +9,21 @@
 	import { slide } from 'svelte/transition';
 	import {quintOut} from 'svelte/easing';
 	import { crossfade } from 'svelte/transition';
+	import { Table } from 'svelte-tabular-table'
 
 	let chained;
 	let items;
 	let avgprice;
 	let monthlygrowth;
 	let annualgrowth;
-	// let value = [];
+	let allitems
 	// let checked = [];
 	let isChecked = {};
 	let sorted;
 	let grouped;
 	let selected;
 	let checkedOrder= {};
+	let y;
 	// const groupBy = (item) => item.CATEGORY;
 
 	const [send, receive] = crossfade({
@@ -43,10 +45,10 @@
 	});
 
 	onMount(async () => {
-		(chained = await csv(
-			'https://gist.githubusercontent.com/henryjameslau/8e98fc34b7aac3f7f98251d0a856e129/raw/f9c696905c74700a7a0bf2649cd0f4675c18399d/chained.csv',
-			autoType
-		)),
+		// (chained = await csv(
+		// 	'https://gist.githubusercontent.com/henryjameslau/8e98fc34b7aac3f7f98251d0a856e129/raw/f9c696905c74700a7a0bf2649cd0f4675c18399d/chained.csv',
+		// 	autoType
+		// )),
 			(items = await csv(
 				'https://gist.githubusercontent.com/henryjameslau/24fd5bf8000c2f04a2140ced6684da61/raw/3bd04b7516fca33e5128542416bac744bd4327ab/metadata.csv',
 				autoType
@@ -72,8 +74,30 @@
 
 	});
 
+// 	const config = {
+// 	init: {
+// 		name: 'sortable-example',
+// 		keys: ['name', 'weight or size', 'company', 'latitude', 'longitude', 'tags'],
+// 		index: '_id',
+// 		data
+// 	},
+// 	features: {
+// 		sortable: {
+// 			key: 'name'
+// 		}
+// 	}
+// }
+
+
+
 	$: selected = Object.entries(isChecked).filter(d=>d[1]==true);
 	$: selectedOrdered=selected.map(d=>[...d,checkedOrder[d[0]]]).sort((a,b)=>b[2]-a[2])
+
+	$:console.log(selectedOrdered)
+
+	function scroll(){
+		y=allitems.scrollTop
+	}
 
     function removeItem(id){
         isChecked[id]=false;
@@ -82,6 +106,8 @@
 	function handleChange(){
 		checkedOrder[this.getAttribute('id')]=new Date().getTime()
 	}
+
+
 </script>
 
 <h1>Add items to your basket</h1>
@@ -112,7 +138,8 @@
 {/if} -->
 
 {#if grouped}
-	<div id="allitems">
+	<div bind:this={allitems} on:scroll={scroll} id="allitems">
+		<div style="opacity: {1 - Math.max(0, y / 40)}" id='scrollmore'>Scroll to see more items</div>
 		{#each grouped as groups}
 			<h3>{groups[0]}</h3>
 			<div class="flex">
@@ -127,6 +154,7 @@
 				{/each}
 			</div>
 		{/each}
+		<div style="opacity: {1 - Math.max(0, y / 90)}" id='scrollmoremore'>Scroll more more ↓</div>
 	</div>
 {/if}
 
@@ -168,9 +196,18 @@
 </div>
 
 
+<!-- <h3>Results table</h3>
+{#if selected}
+hello
+{/if} -->
+
 <style>
 	:global(.list-group-title) {
 		text-transform: none;
+	}
+
+	div#allitems:hover{
+		box-shadow: 3px 3px 3px rgb(236, 236, 236),-3px -3px 3px rgb(236, 236, 236),-3px 3px 3px rgb(236, 236, 236),3px -3px 3px rgb(236, 236, 236);
 	}
 
 	div.item {
@@ -194,15 +231,25 @@
 	div#allitems {
 		height: 400px;
 		overflow-y: scroll;
+		position: relative;
+		text-align: center;
+		padding-top: 2em;
+		box-sizing: border-box;
 	}
+
+	div#scrollmore{
+		display: block;
+	}
+
+	div#scrollmoremore{
+		position:sticky;
+		bottom:0;
+		background:white;
+		pointer-events: none;
+		padding:1em 0em;
+	}
+
     p{
         margin:0;
     }
 </style>
-
-
-<svelte:head>
-	<meta name="robots" content="noindex" />
-	<meta name="googlebot" content="indexifembedded" />
-
-</svelte:head>
