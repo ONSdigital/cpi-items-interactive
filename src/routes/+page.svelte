@@ -73,9 +73,7 @@
 	});
 
 	$: selected = Object.entries(isChecked).filter(d=>d[1]==true);
-	$: console.log(selected.map(e=>+e[0]))
 	$: selectedOrdered=selected.map(d=>[...d,checkedOrder[d[0]]]).sort((a,b)=>b[2]-a[2])
-	$: if(grouped)console.log(grouped[0][1].filter(e=>!selected.map(e=>+e[0]).includes(e.ITEM_ID)))
 
     function removeItem(id){
         isChecked[id]=false;
@@ -132,9 +130,10 @@
 	</div>
 {/if}
 
-{#if selected}
-	<div id="results">
-		<h2>Your selected items</h2>
+
+<div id="results">
+	<h2>Your selected items</h2>
+	{#if selected}	
 		{#each selectedOrdered as item(item[0])}
 			<div in:receive="{{key: item.ITEM_ID}}" out:send="{{key: item.ITEM_ID}}">
 				<p>Name: {items.filter((d) => d.ITEM_ID == item[0])[0]['ITEM_DESC']}</p>
@@ -165,8 +164,9 @@
 			</div>
 			
 		{/each}
-	</div>
-{/if}
+	{/if}
+</div>
+
 
 <style>
 	:global(.list-group-title) {
