@@ -5,7 +5,7 @@
 	import { groups } from 'd3-array';
 	// import Select from 'svelte-select';
 	import { format } from 'd3-format';
-	// import { timeParse, timeFormat } from 'd3-time-format';
+	import { timeParse, timeFormat } from 'd3-time-format';
 	// import { slide } from 'svelte/transition';
 	import {quintOut} from 'svelte/easing';
 	import { crossfade } from 'svelte/transition';
@@ -78,7 +78,7 @@
 	let columns = [
 		{label:"Name",prop:"Name",sort:true,type:"text"},
 		{label:"Weight or size",prop:"Weight or size",sort:true,type:"text",formatFn:(d)=> d=='null' ? '' : d},
-		{label:"Average price",prop:"Average price",sort:true,type:"text",formatFn:(d)=>'£'+format(',.2f')(d)},
+		{label:"Average price",prop:"Average price",sort:true,type:"number",formatFn:(d)=>'£'+format(',.2f')(d)},
 		{label:"Monthly growth",prop:"Monthly growth",sort:true,type:"number",formatFn:(d)=>format('.1f')(d)+'%'},
 		{label:"Annual growth",prop:"Annual growth",sort:true,type:"number",formatFn:(d)=>format('.1f')(d)+'%'}
 	]
@@ -100,24 +100,25 @@
 		'Annual growth':annualgrowth.filter((d) => d.ITEM_ID == item[0])[0][
 							annualgrowth.columns[annualgrowth.columns.length - 1]
 						],
-		'id':item[0]
+		'id':item[0],
+		'timeline':Object.entries(avgprice.filter((d) => d.ITEM_ID == item[0])[0]).filter(d=>d[0]!='ITEM_ID').map(d=>({date:timeParse("%Y-%m-%d")(d[0]),'value':d[1]}))
 	}))
 
 	$: console.log(data)
 
-	$: config = {
-		init: {
-			name: 'sortable-example',
-			keys: ['Name', 'Weight or size', 'Average price', 'Monthly growth', 'Annual growth'],
-			index: '_id',
-			data
-		},
-		features: {
-			sortable: {
-				key: 'name'
-			}
-		}
-	}
+	// $: config = {
+	// 	init: {
+	// 		name: 'sortable-example',
+	// 		keys: ['Name', 'Weight or size', 'Average price', 'Monthly growth', 'Annual growth'],
+	// 		index: '_id',
+	// 		data
+	// 	},
+	// 	features: {
+	// 		sortable: {
+	// 			key: 'name'
+	// 		}
+	// 	}
+	// }
 
 	function scroll(){
 		y=allitems.scrollTop
