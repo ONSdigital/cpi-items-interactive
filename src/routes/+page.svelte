@@ -3,13 +3,14 @@
 	import { onMount } from 'svelte';
 	import { autoType } from 'd3-dsv';
 	import { groups } from 'd3-array';
-	import Select from 'svelte-select';
+	// import Select from 'svelte-select';
 	import { format } from 'd3-format';
-	import { timeParse, timeFormat } from 'd3-time-format';
-	import { slide } from 'svelte/transition';
+	// import { timeParse, timeFormat } from 'd3-time-format';
+	// import { slide } from 'svelte/transition';
 	import {quintOut} from 'svelte/easing';
 	import { crossfade } from 'svelte/transition';
-	import { Table } from 'svelte-tabular-table'
+	// import { Table } from 'svelte-tabular-table'
+	import SortTable from "../components/helpers/SortTable.svelte"
 
 	let chained;
 	let items;
@@ -74,26 +75,49 @@
 
 	});
 
-// 	const config = {
-// 	init: {
-// 		name: 'sortable-example',
-// 		keys: ['name', 'weight or size', 'company', 'latitude', 'longitude', 'tags'],
-// 		index: '_id',
-// 		data
-// 	},
-// 	features: {
-// 		sortable: {
-// 			key: 'name'
-// 		}
-// 	}
-// }
+	let columns = [
+		{label:"Name",prop:"Name",sort:true,type:"text"},
+		{label:"Weight or size",prop:"Weight or size",sort:true,type:"text",formatFn:(d)=> d=='null' ? '' : d},
+		{label:"Average price",prop:"Average price",sort:true,type:"text",formatFn:(d)=>'£'+format(',.2f')(d)},
+		{label:"Monthly growth",prop:"Monthly growth",sort:true,type:"number",formatFn:(d)=>format('.1f')(d)+'%'},
+		{label:"Annual growth",prop:"Annual growth",sort:true,type:"number",formatFn:(d)=>format('.1f')(d)+'%'}
+	]
 
 
 
 	$: selected = Object.entries(isChecked).filter(d=>d[1]==true);
 	$: selectedOrdered=selected.map(d=>[...d,checkedOrder[d[0]]]).sort((a,b)=>b[2]-a[2])
 
-	$:console.log(selectedOrdered)
+	$: data=selectedOrdered.map(item=>({
+		'Name':items.filter((d) => d.ITEM_ID == item[0])[0]['ITEM_DESC'],
+		'Weight or size':items.filter((d) => d.ITEM_ID == item[0])[0]['WEIGHT\\SIZE'] == null ? '' : items.filter((d) => d.ITEM_ID == item[0])[0]['WEIGHT\\SIZE'],
+		'Average price': avgprice.filter((d) => d.ITEM_ID == item[0])[0][
+							avgprice.columns[avgprice.columns.length - 1]
+						],
+		'Monthly growth':monthlygrowth.filter((d) => d.ITEM_ID == item[0])[0][
+							monthlygrowth.columns[monthlygrowth.columns.length - 1]
+						],
+		'Annual growth':annualgrowth.filter((d) => d.ITEM_ID == item[0])[0][
+							annualgrowth.columns[annualgrowth.columns.length - 1]
+						],
+		'id':item[0]
+	}))
+
+	$: console.log(data)
+
+	$: config = {
+		init: {
+			name: 'sortable-example',
+			keys: ['Name', 'Weight or size', 'Average price', 'Monthly growth', 'Annual growth'],
+			index: '_id',
+			data
+		},
+		features: {
+			sortable: {
+				key: 'name'
+			}
+		}
+	}
 
 	function scroll(){
 		y=allitems.scrollTop
@@ -106,6 +130,8 @@
 	function handleChange(){
 		checkedOrder[this.getAttribute('id')]=new Date().getTime()
 	}
+
+
 
 
 </script>
@@ -161,7 +187,12 @@
 
 <div id="results">
 	<h2>Your selected items</h2>
-	{#if selected}	
+
+	{#if selected.length>0}
+	<SortTable {columns} rows={data} mobile={false} on:remove={(e)=>removeItem(e.detail)}/>
+	{/if}
+	
+	<!-- {#if selected}	
 		{#each selectedOrdered as item(item[0])}
 			<div in:receive="{{key: item.ITEM_ID}}" out:send="{{key: item.ITEM_ID}}">
 				<p>Name: {items.filter((d) => d.ITEM_ID == item[0])[0]['ITEM_DESC']}</p>
@@ -185,21 +216,20 @@
 						annualgrowth.filter((d) => d.ITEM_ID == item[0])[0][
 							annualgrowth.columns[annualgrowth.columns.length - 1]
 						]
-					)}%
+					)}
 				</p>
 				<button on:click={removeItem(item[0])}>Remove</button>
 				<hr />
 			</div>
 			
 		{/each}
-	{/if}
+	{/if} -->
+
+	<!-- {#if data}
+	<Table {...config}/>
+	{/if} -->
+
 </div>
-
-
-<!-- <h3>Results table</h3>
-{#if selected}
-hello
-{/if} -->
 
 <style>
 	:global(.list-group-title) {
@@ -249,7 +279,7 @@ hello
 		padding:1em 0em;
 	}
 
-    p{
+    /* p{
         margin:0;
-    }
+    } */
 </style>
