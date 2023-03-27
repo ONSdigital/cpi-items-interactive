@@ -136,8 +136,12 @@
 
 
 </script>
+<div id="top">
+	<div id='title'>
+		<h1>How is the average price of items changing over time?</h1>
+		<p>Use our interactive to see how the price of different items have changed since 2017.</p>
 
-<h1>Add items to your basket</h1>
+	</div>
 <!-- <p>Use the dropdown to select, type to search, then add it to your basket.</p>
 {#if items}
     {#if value}<p>{value.length} item{value.length>1 ? "s" : ''} selected.</p>{/if}
@@ -163,31 +167,38 @@
     <hr>
 {/each}
 {/if} -->
+	<div id="input">
+	<h2>Add items to your basket</h2>
+	<p>Select items to add them to your basket</p>
 
-{#if grouped}
-	<div bind:this={allitems} on:scroll={scroll} id="allitems">
-		<div style="opacity: {1 - Math.max(0, y / 40)}" id='scrollmore'>Scroll to see more items</div>
-		{#each grouped as groups}
-			<h3>{groups[0]}</h3>
-			<div class="flex">
-				{#each groups[1].filter(e=>!selected.map(e=>+e[0]).includes(e.ITEM_ID)) as item(item.ITEM_ID)}
-					<div class="item" in:receive="{{key: item.ITEM_ID}}" out:send="{{key: item.ITEM_ID}}">
-						<input type="checkbox" id={item.ITEM_ID} on:change={handleChange} bind:checked={isChecked[item.ITEM_ID]} />
-						<label for={item.ITEM_ID}
-							><span class="bold">{item.ITEM_DESC}</span>
-							{item['WEIGHT\\SIZE'] ? item['WEIGHT\\SIZE'] : ''}</label
-						>
-					</div>
-				{/each}
-			</div>
-		{/each}
-		<div style="opacity: {1 - Math.max(0, y / 90)}" id='scrollmoremore'>Scroll more more ↓</div>
+	{#if grouped}
+		<div bind:this={allitems} on:scroll={scroll} id="allitems">
+			<div style="opacity: {1 - Math.max(0, y / 40)}" id='scrollmore'>Scroll to see more items</div>
+			{#each grouped as groups}
+				<h3>{groups[0]}</h3>
+				<div class="flex">
+					{#each groups[1].filter(e=>!selected.map(e=>+e[0]).includes(e.ITEM_ID)) as item(item.ITEM_ID)}
+						<div class="item" in:receive="{{key: item.ITEM_ID}}" out:send="{{key: item.ITEM_ID}}">
+							<input type="checkbox" id={item.ITEM_ID} on:change={handleChange} bind:checked={isChecked[item.ITEM_ID]} />
+							<label for={item.ITEM_ID}
+								><span class="bold">{item.ITEM_DESC}</span>
+								{item['WEIGHT\\SIZE'] ? item['WEIGHT\\SIZE'] : ''}</label
+							>
+						</div>
+					{/each}
+				</div>
+			{/each}
+			<div style="opacity: {1 - Math.max(0, y / 90)}" id='scrollmoremore'>Scroll more more ↓</div>
+		</div>
+	{/if}
 	</div>
-{/if}
-
+</div>
 
 <div id="results">
-	<h2>Your selected items</h2>
+	<h2>Your basket</h2>
+	<p>
+		Average prices of items in [date] and the latest monthly and annual growth rate.
+	</p>
 
 	{#if selected.length>0}
 	<SortTable {columns} rows={data} mobile={false} on:remove={(e)=>removeItem(e.detail)}/>
@@ -233,10 +244,6 @@
 </div>
 
 <style>
-	:global(.list-group-title) {
-		text-transform: none;
-	}
-
 	div#allitems:hover{
 		box-shadow: 3px 3px 3px rgb(236, 236, 236),-3px -3px 3px rgb(236, 236, 236),-3px 3px 3px rgb(236, 236, 236),3px -3px 3px rgb(236, 236, 236);
 	}
@@ -244,6 +251,14 @@
 	div.item {
 		margin: 5px;
 		border: 2px solid #206095;
+	}
+
+	div#top{
+		background-color: #E9EFF4;
+	}
+
+	div#title, div#input{
+		padding:25px;
 	}
 
 	.bold {
@@ -266,6 +281,13 @@
 		text-align: center;
 		padding-top: 2em;
 		box-sizing: border-box;
+		background-color: white;
+	}
+
+	div#results{
+		background-color: #F5F5F6;
+		margin-top: 10px;
+		padding: 25px;
 	}
 
 	div#scrollmore{
@@ -280,7 +302,11 @@
 		padding:1em 0em;
 	}
 
-    /* p{
+	#results >h2{
+		color: #206095;
+	}
+
+    h1,h2,h3{
         margin:0;
-    } */
+    }
 </style>

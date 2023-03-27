@@ -156,6 +156,8 @@
 	th {
 		padding: 0px;
 		vertical-align: bottom;
+		color:#206095;
+		font-size: 18px;
 	}
 	th button {
 		color: inherit;

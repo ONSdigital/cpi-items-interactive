@@ -1,0 +1,15 @@
+html {
+    -webkit-text-size-adjust: none;
+    text-size-adjust:none;
+    /* prevent font scaling in landscape */
+  }
+  
+  body
+  /* required */
+    {
+    font-family: 'Open Sans', sans-serif;
+    font-feature-settings: "salt" 1;
+    font-weight: 400;
+    max-width: 700px;
+    margin: 0px auto;
+  }
