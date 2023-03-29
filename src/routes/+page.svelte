@@ -102,7 +102,10 @@
 							annualgrowth.columns[annualgrowth.columns.length - 1]
 						],
 		'id':item[0],
-		'timeline':Object.entries(avgprice.filter((d) => d.ITEM_ID == item[0])[0]).filter(d=>d[0]!='ITEM_ID').map(d=>({date:timeParse("%Y-%m-%d")(d[0]),'value':d[1]}))
+		'timeline':Object.entries(avgprice.filter((d) => d.ITEM_ID == item[0])[0]).filter(d=>d[0]!='ITEM_ID').map(d=>({date:timeParse("%Y-%m-%d")(d[0]),'value':d[1]})),
+		'pricelastmonth':avgprice.filter((d) => d.ITEM_ID == item[0])[0][
+							avgprice.columns[avgprice.columns.length - 2]
+						]
 	}))
 
 	$: console.log(data)
@@ -244,7 +247,7 @@
 
 </div>
 
-{#if data}
+{#if data.length>0}
 <div id="summary">
 	<Summary {data}/>
 </div>
@@ -293,6 +296,12 @@
 
 	div#results{
 		background-color: #F5F5F6;
+		margin-top: 10px;
+		padding: 25px;
+	}
+
+	div#summary{
+		background-color: #E9EFF4;
 		margin-top: 10px;
 		padding: 25px;
 	}
