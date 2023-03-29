@@ -132,7 +132,7 @@
 	}
 
 	button{
-		background: url('close-icon.svg');
+		background: url('../../../close-icon.svg');
 		width:23px;
 		height:23px;
 		box-sizing: border-box;
