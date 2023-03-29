@@ -108,9 +108,8 @@
 			<tr in:receive="{{key: r.id}}" out:send="{{key: r.id}}" style={r.style}
 						class={r.class} on:click={() => dispatch("chart", r)}>
 				<td>
-					<button on:click={()=>dispatch('remove',r.id)}>
-						Remove
-						</button>
+					<button aria-label="Remove item" on:click={()=>dispatch('remove',r.id)}>
+					</button>
 				</td>
 				{#each columns as { label, prop, type, formatFn = (d) => d }}
 					{@const value = formatFn(r[prop])}
@@ -131,6 +130,25 @@
 	caption {
 		font-weight: bold;
 	}
+
+	button{
+		background: url('close-icon.svg');
+		width:23px;
+		height:23px;
+		box-sizing: border-box;
+		padding: 0;
+		border: none;
+	}
+
+	button:hover,button:focus{
+		outline: 3px solid #ffa23a;
+		position: relative;
+		outline-offset: 0px;
+		z-index: 1;
+	}
+
+
+
 	table {
 		width: 100%;
 		margin: 0 auto;

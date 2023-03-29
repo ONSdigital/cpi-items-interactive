@@ -9,10 +9,11 @@
 	// import { slide } from 'svelte/transition';
 	import {quintOut} from 'svelte/easing';
 	import { crossfade } from 'svelte/transition';
-	// import { Table } from 'svelte-tabular-table'
-	import SortTable from "../components/helpers/SortTable.svelte"
+	// import { Table } from 'svelte-tabular-table';
+	import SortTable from "../components/helpers/SortTable.svelte";
+	import Summary from "../components/helpers/Summary.svelte";
 
-	let chained;
+	// let chained;
 	let items;
 	let avgprice;
 	let monthlygrowth;
@@ -51,7 +52,7 @@
 		// 	autoType
 		// )),
 			(items = await csv(
-				'https://gist.githubusercontent.com/henryjameslau/24fd5bf8000c2f04a2140ced6684da61/raw/3bd04b7516fca33e5128542416bac744bd4327ab/metadata.csv',
+				'https://gist.githubusercontent.com/henryjameslau/8084919379b42b260e84c28ec7986612/raw/754a00aaba4c7d2ec759282732bec1f0cdad190e/metadata-lowest-category.csv',
 				autoType
 			)),
 			(avgprice = await csv(
@@ -68,10 +69,10 @@
 			));
 
 		sorted = items.sort(
-		 	(a, b) => a['SUB CATEGORY 1'].toString().localeCompare(b['SUB CATEGORY 1']) ||a.ITEM_DESC.localeCompare(b.ITEM_DESC)
+		 	(a, b) => a['lowestCategory'].toString().localeCompare(b['lowestCategory']) ||a.ITEM_DESC.localeCompare(b.ITEM_DESC)
 		);
 
-		grouped = groups(items, (d) => d['SUB CATEGORY 1']);
+		grouped = groups(items, (d) => d['lowestCategory']);
 
 	});
 
@@ -242,6 +243,12 @@
 	{/if} -->
 
 </div>
+
+{#if data}
+<div id="summary">
+	<Summary {data}/>
+</div>
+{/if}
 
 <style>
 	div#allitems:hover{
