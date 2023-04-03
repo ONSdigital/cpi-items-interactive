@@ -79,7 +79,7 @@
 	<caption>{caption}</caption>
 	<thead>
 		<tr>
-			<th></th>
+			<th><button aria-label="Clear all items" on:click={()=>dispatch('clearAll')}>Clear all</button></th>
 			{#each th as { label, prop, type, sort, dir }, i}
 				<th
 					class:is-sortable={sort}

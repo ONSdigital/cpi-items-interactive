@@ -13,6 +13,7 @@ $: if(data.length>0){
     total = data.reduce((acc,cur)=>acc+cur['Average price'],0)
     totallastmonth = data.reduce((acc,cur)=>acc+cur['pricelastmonth'],0)
     pricedifflastmonth=total-totallastmonth
+    // https://seanconnolly.dev/javascript-find-element-with-max-value
     maxmonthlygrowth=data.reduce((prev,curr)=>{
         return prev['Monthly growth'] > curr['Monthly growth'] ? prev : curr
     })
@@ -29,7 +30,7 @@ function lowercasefirstletter(string) {
     The total average price for all the items in your basket is £{fmt(total)}. This was £{fmt(pricedifflastmonth)} {pricedifflastmonth>0 ? 'more' :' less'} than last month.
 </p>
 <p>
-    Over the last month, {lowercasefirstletter(maxmonthlygrowth['Name'])} saw the highest {maxmonthlygrowth['Monthly growth']>0 ? 'increase' : 'decrease'} at {format('.1f')(maxmonthlygrowth['Monthly growth'])}%
+    Over the last month, {lowercasefirstletter(maxmonthlygrowth['Name'])} saw the highest {maxmonthlygrowth['Monthly growth']>0 ? 'increase' : 'decrease'} at {format('.1f')(maxmonthlygrowth['Monthly growth'])}%.
 </p>
 
 <style>

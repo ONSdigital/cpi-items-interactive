@@ -3,54 +3,29 @@
 	import { onMount } from 'svelte';
 	import { autoType } from 'd3-dsv';
 	import { groups } from 'd3-array';
-	// import Select from 'svelte-select';
 	import { format } from 'd3-format';
-	import { timeParse, timeFormat } from 'd3-time-format';
-	// import { slide } from 'svelte/transition';
+	import { timeParse } from 'd3-time-format';
 	import {quintOut} from 'svelte/easing';
-	import { crossfade } from 'svelte/transition';
-	// import { Table } from 'svelte-tabular-table';
+	import { crossfade,fade } from 'svelte/transition';
 	import SortTable from "../components/helpers/SortTable.svelte";
 	import Summary from "../components/helpers/Summary.svelte";
 
-	// let chained;
-	let items;
+	let items; //metadata
 	let avgprice;
 	let monthlygrowth;
 	let annualgrowth;
 	let allitems
-	// let checked = [];
-	let isChecked = {};
-	let sorted;
-	let grouped;
+	let isChecked = {}; // object for seeing which items are selected
+	let grouped; // nested items with hierarchy
 	let selected;
-	let checkedOrder= {};
+	let checkedOrder= {}; //object to store which order the items are selected in
 	let y;
-	// const groupBy = (item) => item.CATEGORY;
+	let filter;
+	let regex;
+	let typing = false;
 
-	const [send, receive] = crossfade({
-		duration: d => Math.sqrt(d * 200),
-
-		fallback(node, params) {
-			const style = getComputedStyle(node);
-			const transform = style.transform === 'none' ? '' : style.transform;
-
-			return {
-				duration: 600,
-				easing: quintOut,
-				css: t => `
-					transform: ${transform} scale(${t});
-					opacity: ${t}
-				`
-			};
-		}
-	});
 
 	onMount(async () => {
-		// (chained = await csv(
-		// 	'https://gist.githubusercontent.com/henryjameslau/8e98fc34b7aac3f7f98251d0a856e129/raw/f9c696905c74700a7a0bf2649cd0f4675c18399d/chained.csv',
-		// 	autoType
-		// )),
 			(items = await csv(
 				'https://gist.githubusercontent.com/henryjameslau/8084919379b42b260e84c28ec7986612/raw/754a00aaba4c7d2ec759282732bec1f0cdad190e/metadata-lowest-category.csv',
 				autoType
@@ -67,13 +42,6 @@
 				'https://gist.githubusercontent.com/henryjameslau/76f038ec284f08d65a3b224986ef57f3/raw/96ac1ccbbf88de2733aac4f1184a57ee78e3a8c5/annualgrowth.csv',
 				autoType
 			));
-
-		sorted = items.sort(
-		 	(a, b) => a['lowestCategory'].toString().localeCompare(b['lowestCategory']) ||a.ITEM_DESC.localeCompare(b.ITEM_DESC)
-		);
-
-		grouped = groups(items, (d) => d['lowestCategory']);
-
 	});
 
 	let columns = [
@@ -83,8 +51,6 @@
 		{label:"Monthly growth",prop:"Monthly growth",sort:true,type:"number",formatFn:(d)=>format('.1f')(d)+'%'},
 		{label:"Annual growth",prop:"Annual growth",sort:true,type:"number",formatFn:(d)=>format('.1f')(d)+'%'}
 	]
-
-
 
 	$: selected = Object.entries(isChecked).filter(d=>d[1]==true);
 	$: selectedOrdered=selected.map(d=>[...d,checkedOrder[d[0]]]).sort((a,b)=>b[2]-a[2])
@@ -108,22 +74,6 @@
 						]
 	}))
 
-	$: console.log(data)
-
-	// $: config = {
-	// 	init: {
-	// 		name: 'sortable-example',
-	// 		keys: ['Name', 'Weight or size', 'Average price', 'Monthly growth', 'Annual growth'],
-	// 		index: '_id',
-	// 		data
-	// 	},
-	// 	features: {
-	// 		sortable: {
-	// 			key: 'name'
-	// 		}
-	// 	}
-	// }
-
 	function scroll(){
 		y=allitems.scrollTop
 	}
@@ -132,65 +82,94 @@
         isChecked[id]=false;
     }
 
+	function clearAll(){
+		selected.forEach(d=>isChecked[d[0]]=false)
+	}
+
 	function handleChange(){
 		checkedOrder[this.getAttribute('id')]=new Date().getTime()
 	}
 
+	function clearInput(){
+		filter=""
+	}
 
+	function input(){
+		typing = true;
+		setTimeout(()=>{typing=false;},200)
+	}
 
+	$: [send, receive] = crossfade({
+		duration: (filter&&typing) ? 0 : 200,
+
+		fallback(node, params) {
+			const style = getComputedStyle(node);
+			const transform = style.transform === 'none' ? '' : style.transform;
+			return {
+				duration: filter&&typing ? 0 : 600,
+				easing: quintOut,
+				css: t => `
+					transform: ${transform} scale(${t});
+					opacity: ${t}
+				`
+			};
+		}
+	});
+
+	$: if(filter) regex = new RegExp(filter, "gi")
+
+	$: if(filter){
+		grouped = groups(items, (d) => d['lowestCategory']);
+		grouped = grouped.filter(d=>(d[0].match(regex)) || (d[1].some(e=>e.ITEM_DESC.match(regex))))
+			.map(function(d){
+			if(d[0].match(regex)){return [d[0],d[1]]}
+			else{return [d[0],d[1].filter(e=>e.ITEM_DESC.match(regex))]}
+		}) 
+		console.log(grouped)
+	}
+
+	$:if(items&&!filter){
+		grouped = groups(items.sort(
+		 	(a, b) => a['lowestCategory'].toString().localeCompare(b['lowestCategory']) ||a.ITEM_DESC.localeCompare(b.ITEM_DESC)
+		), (d) => d['lowestCategory']);
+	}
 
 </script>
 <div id="top">
 	<div id='title'>
 		<h1>How is the average price of items changing over time?</h1>
-		<p>Use our interactive to see how the price of different items have changed since 2017.</p>
+		<p>Use our interactive to see how the price of different items have changed since last year.</p>
 
 	</div>
-<!-- <p>Use the dropdown to select, type to search, then add it to your basket.</p>
-{#if items}
-    {#if value}<p>{value.length} item{value.length>1 ? "s" : ''} selected.</p>{/if}
-    <Select placeholder={"Click and select or type to search for items"} items={sorted} bind:justValue={value} label="ITEM_DESC" itemId="ITEM_ID" multiple={true} multiFullItemClearable {groupBy} >
-        <div slot="clear-icon"> Clear all </div> 
-    </Select>
-{/if}
 
-<h3>Your basket</h3>
-{#if avgprice}
-<p>Average prices of items in {timeFormat("%B %Y")(timeParse("%Y-%m-%d")(avgprice.columns[avgprice.columns.length-1]))} and the latest monthly and annual growth rates</p>
-{/if}
-
-
-{#if Array.isArray(value)}
-<hr>
-{#each value as item}
-    <p>Name: {items.filter(d=>d.ITEM_ID==item)[0]['ITEM_DESC']}</p>
-    <p>Weight or size: {items.filter(d=>d.ITEM_ID==item)[0]['WEIGHT\\SIZE']}</p>
-    <p>Average price: £{format(",.2f")(avgprice.filter(d=>d.ITEM_ID==item)[0][avgprice.columns[avgprice.columns.length-1]])}</p>
-    <p>Monthly growth: {format(".1f")(monthlygrowth.filter(d=>d.ITEM_ID==item)[0][monthlygrowth.columns[monthlygrowth.columns.length-1]])}%</p>
-    <p>Annual growth: {format(".1f")(annualgrowth.filter(d=>d.ITEM_ID==item)[0][annualgrowth.columns[annualgrowth.columns.length-1]])}%</p>
-    <hr>
-{/each}
-{/if} -->
 	<div id="input">
 	<h2>Add items to your basket</h2>
-	<p>Select items to add them to your basket</p>
+	<p>Select items to add them to your basket.</p>
+	<div>
+		<label for="filter">Filter items:</label><input id="filter" type=text bind:value={filter} on:input={input}/><button on:click={clearInput}>Clear filter</button>
+	</div>
+	
 
 	{#if grouped}
 		<div bind:this={allitems} on:scroll={scroll} id="allitems">
 			<div style="opacity: {1 - Math.max(0, y / 40)}" id='scrollmore'>Scroll to see more items</div>
 			{#each grouped as groups}
-				<h3>{groups[0]}</h3>
+				<!-- https://stackoverflow.com/questions/3294576/javascript-highlight-substring-keeping-original-case-but-searching-in-case-inse -->
+				{#if groups[1].filter(e=>!selected.map(e=>+e[0]).includes(e.ITEM_ID)).length>0}
+				<h3>{@html filter ? groups[0].replace(regex, (str)=> '<span class="highlight">'+str+'</span>') : groups[0]}</h3>
 				<div class="flex">
 					{#each groups[1].filter(e=>!selected.map(e=>+e[0]).includes(e.ITEM_ID)) as item(item.ITEM_ID)}
-						<div class="item" in:receive="{{key: item.ITEM_ID}}" out:send="{{key: item.ITEM_ID}}">
+						<div class="item" in:receive|local="{{key: item.ITEM_ID}}" out:send|local="{{key: item.ITEM_ID}}">
+
 							<input type="checkbox" id={item.ITEM_ID} on:change={handleChange} bind:checked={isChecked[item.ITEM_ID]} />
 							<label for={item.ITEM_ID}
-								><span class="bold">{item.ITEM_DESC}</span>
+								><span class="bold">{@html filter ? item.ITEM_DESC.replace(regex, (str)=> '<span class="highlight">'+str+'</span>') : item.ITEM_DESC}</span>
 								{item['WEIGHT\\SIZE'] ? item['WEIGHT\\SIZE'] : ''}</label
 							>
 						</div>
 					{/each}
 				</div>
+				{/if}
 			{/each}
 			<div style="opacity: {1 - Math.max(0, y / 90)}" id='scrollmoremore'>Scroll more more ↓</div>
 		</div>
@@ -205,45 +184,8 @@
 	</p>
 
 	{#if selected.length>0}
-	<SortTable {columns} rows={data} mobile={false} on:remove={(e)=>removeItem(e.detail)}/>
+	<SortTable {columns} rows={data} mobile={false} on:clearAll={clearAll} on:remove={(e)=>removeItem(e.detail)}/>
 	{/if}
-	
-	<!-- {#if selected}	
-		{#each selectedOrdered as item(item[0])}
-			<div in:receive="{{key: item.ITEM_ID}}" out:send="{{key: item.ITEM_ID}}">
-				<p>Name: {items.filter((d) => d.ITEM_ID == item[0])[0]['ITEM_DESC']}</p>
-				<p>Weight or size: {items.filter((d) => d.ITEM_ID == item[0])[0]['WEIGHT\\SIZE']}</p>
-				<p>
-					Average price: £{format(',.2f')(
-						avgprice.filter((d) => d.ITEM_ID == item[0])[0][
-							avgprice.columns[avgprice.columns.length - 1]
-						]
-					)}
-				</p>
-				<p>
-					Monthly growth: {format('.1f')(
-						monthlygrowth.filter((d) => d.ITEM_ID == item[0])[0][
-							monthlygrowth.columns[monthlygrowth.columns.length - 1]
-						]
-					)}%
-				</p>
-				<p>
-					Annual growth: {format('.1f')(
-						annualgrowth.filter((d) => d.ITEM_ID == item[0])[0][
-							annualgrowth.columns[annualgrowth.columns.length - 1]
-						]
-					)}
-				</p>
-				<button on:click={removeItem(item[0])}>Remove</button>
-				<hr />
-			</div>
-			
-		{/each}
-	{/if} -->
-
-	<!-- {#if data}
-	<Table {...config}/>
-	{/if} -->
 
 </div>
 
@@ -271,6 +213,10 @@
 		padding:25px;
 	}
 
+	:global(span.highlight){
+		background-color: #FFFF00;
+	}
+
 	.bold {
 		font-weight: 700;
 	}
@@ -278,10 +224,6 @@
 	.flex {
 		display: flex;
 		flex-flow: wrap;
-	}
-
-	label {
-		margin: 2px;
 	}
 
 	div#allitems {
@@ -292,6 +234,7 @@
 		padding-top: 2em;
 		box-sizing: border-box;
 		background-color: white;
+		margin-top: 10px;
 	}
 
 	div#results{
