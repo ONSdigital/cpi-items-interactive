@@ -6,7 +6,7 @@ export let data;
 let total
 let totallastmonth
 let pricedifflastmonth
-let maxmonthlygrowth
+let maxannualgrowth
 let fmt=format(",.2f")
 
 $: if(data.length>0){
@@ -14,8 +14,8 @@ $: if(data.length>0){
     totallastmonth = data.reduce((acc,cur)=>acc+cur['pricelastmonth'],0)
     pricedifflastmonth=total-totallastmonth
     // https://seanconnolly.dev/javascript-find-element-with-max-value
-    maxmonthlygrowth=data.reduce((prev,curr)=>{
-        return prev['Monthly growth'] > curr['Monthly growth'] ? prev : curr
+    maxannualgrowth=data.reduce((prev,curr)=>{
+        return prev['Annual growth'] > curr['Annual growth'] ? prev : curr
     })
 }
 
@@ -30,7 +30,7 @@ function lowercasefirstletter(string) {
     The total average price for all the items in your basket is £{fmt(total)}. This was £{fmt(pricedifflastmonth)} {pricedifflastmonth>0 ? 'more' :' less'} than last month.
 </p>
 <p>
-    Over the last month, {lowercasefirstletter(maxmonthlygrowth['Name'])} saw the highest {maxmonthlygrowth['Monthly growth']>0 ? 'increase' : 'decrease'} at {format('.1f')(maxmonthlygrowth['Monthly growth'])}%.
+    Over the last year, {lowercasefirstletter(maxannualgrowth['Name'])} saw the highest {maxannualgrowth['Monthly growth']>0 ? 'increase' : 'decrease'} at {format('.1f')(maxannualgrowth['Annual growth'])}%.
 </p>
 
 <style>

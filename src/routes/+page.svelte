@@ -9,6 +9,7 @@
 	import { crossfade,fade } from 'svelte/transition';
 	import SortTable from "../components/helpers/SortTable.svelte";
 	import Summary from "../components/helpers/Summary.svelte";
+	import pym from "pym.js";
 
 	let items; //metadata
 	let avgprice;
@@ -23,7 +24,9 @@
 	let filter;
 	let regex;
 	let typing = false;
-
+	let pymChild;
+	let w;
+	let mainElementHeight;
 
 	onMount(async () => {
 			(items = await csv(
@@ -42,7 +45,27 @@
 				'https://gist.githubusercontent.com/henryjameslau/76f038ec284f08d65a3b224986ef57f3/raw/96ac1ccbbf88de2733aac4f1184a57ee78e3a8c5/annualgrowth.csv',
 				autoType
 			));
+
+
+			pymChild = new pym.Child
+
+
+			let checkitems = new RegExp('[0-9]{6}')
+			let parent = new URLSearchParams(document.location.search).get("parentUrl");
+			let child = window.location.href.includes('#')
+			let childcode = child ? child.split("#")[1].split(',').map(d=>+d) : null
+			let parentcode = parent ? parent.split("#")[1].split(',').map(d=>+d) : null;
+			
+			if (parentcode && parentcode.every(d=>checkitems.test(d))){
+				parentcode.forEach(d=>isChecked[d]=true)
+				
+			}
+			if (childcode && childcode.every(d=>checkitems.test(d))){
+				childcode.forEach(d=>isChecked[d]=true)
+				
+			}
 	});
+
 
 	let columns = [
 		{label:"Name",prop:"Name",sort:true,type:"text"},
@@ -80,14 +103,17 @@
 
     function removeItem(id){
         isChecked[id]=false;
+		updateHeight()
     }
 
 	function clearAll(){
 		selected.forEach(d=>isChecked[d[0]]=false)
+		updateHeight()
 	}
 
 	function handleChange(){
 		checkedOrder[this.getAttribute('id')]=new Date().getTime()
+		updateHeight()
 	}
 
 	function clearInput(){
@@ -98,6 +124,23 @@
 		typing = true;
 		setTimeout(()=>{typing=false;},200)
 	}
+
+	function updateHeight(event) {
+        // note that i'm actually ignoring the event object itself
+		// only process if the first main element exists    
+        if (document.getElementsByTagName('main')[0]) {
+			
+            // sending height of the first <main> tag to the Pym parent
+            // as a message instead of using pymChild.sendHeight, which sends the 
+            // height of the <body> tag. 
+            mainElementHeight = document.getElementsByTagName('main')[0].offsetHeight.toString()
+			console.log('sendHeight',mainElementHeight)
+            pymChild.sendMessage('height', mainElementHeight);
+        }
+    }
+	$: if(w&&pymChild) {
+		updateHeight()
+	} // trick to update height on w change
 
 	$: [send, receive] = crossfade({
 		duration: (filter&&typing) ? 0 : 200,
@@ -125,7 +168,6 @@
 			if(d[0].match(regex)){return [d[0],d[1]]}
 			else{return [d[0],d[1].filter(e=>e.ITEM_DESC.match(regex))]}
 		}) 
-		console.log(grouped)
 	}
 
 	$:if(items&&!filter){
@@ -135,7 +177,9 @@
 	}
 
 </script>
-<div id="top">
+<main>
+
+<div id="top" bind:clientWidth={w}>
 	<div id='title'>
 		<h1>How is the average price of items changing over time?</h1>
 		<p>Use our interactive to see how the price of different items have changed since last year.</p>
@@ -156,10 +200,10 @@
 			{#each grouped as groups}
 				<!-- https://stackoverflow.com/questions/3294576/javascript-highlight-substring-keeping-original-case-but-searching-in-case-inse -->
 				{#if groups[1].filter(e=>!selected.map(e=>+e[0]).includes(e.ITEM_ID)).length>0}
-				<h3>{@html filter ? groups[0].replace(regex, (str)=> '<span class="highlight">'+str+'</span>') : groups[0]}</h3>
+				<h3 in:receive="{{key: groups[0]}}" out:send="{{key: groups[0]}}">{@html filter ? groups[0].replace(regex, (str)=> '<span class="highlight">'+str+'</span>') : groups[0]}</h3>
 				<div class="flex">
 					{#each groups[1].filter(e=>!selected.map(e=>+e[0]).includes(e.ITEM_ID)) as item(item.ITEM_ID)}
-						<div class="item" in:receive|local="{{key: item.ITEM_ID}}" out:send|local="{{key: item.ITEM_ID}}">
+						<div class="item" in:receive="{{key: item.ITEM_ID}}" out:send="{{key: item.ITEM_ID}}">
 
 							<input type="checkbox" id={item.ITEM_ID} on:change={handleChange} bind:checked={isChecked[item.ITEM_ID]} />
 							<label for={item.ITEM_ID}
@@ -194,6 +238,8 @@
 	<Summary {data}/>
 </div>
 {/if}
+
+</main>
 
 <style>
 	div#allitems:hover{
