@@ -29,6 +29,8 @@ function lowercasefirstletter(string) {
 <p class='highlight'>
     The total average price for all the items in your basket is £{fmt(total)}. This was £{fmt(pricedifflastmonth)} {pricedifflastmonth>0 ? 'more' :' less'} than last month.
 </p>
+
+<!-- Check items have annual growth in them -->
 <p>
     Over the last year, {lowercasefirstletter(maxannualgrowth['Name'])} saw the highest {maxannualgrowth['Monthly growth']>0 ? 'increase' : 'decrease'} at {format('.1f')(maxannualgrowth['Annual growth'])}%.
 </p>

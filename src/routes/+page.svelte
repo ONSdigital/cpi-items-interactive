@@ -4,11 +4,16 @@
 	import { autoType } from 'd3-dsv';
 	import { groups } from 'd3-array';
 	import { format } from 'd3-format';
-	import { timeParse } from 'd3-time-format';
+	import { timeParse, timeFormat } from 'd3-time-format';
 	import {quintOut} from 'svelte/easing';
 	import { crossfade,fade } from 'svelte/transition';
+    // import Icon from "./MaterialIcon.svelte";
 	import SortTable from "../components/helpers/SortTable.svelte";
 	import Summary from "../components/helpers/Summary.svelte";
+	import Share from "../components/helpers/Share.svelte"
+	import DownloadData from "../components/helpers/DownloadData.svelte";
+	import Embed from "../components/helpers/Embed.svelte"
+	import Feedback from "../components/helpers/Feedback.svelte"
 	import pym from "pym.js";
 
 	let items; //metadata
@@ -27,6 +32,7 @@
 	let pymChild;
 	let w;
 	let mainElementHeight;
+	let lastmonth;
 
 	onMount(async () => {
 			(items = await csv(
@@ -46,6 +52,7 @@
 				autoType
 			));
 
+			lastmonth=timeParse("%Y-%m-%d")(monthlygrowth.columns[monthlygrowth.columns.length-1])
 
 			pymChild = new pym.Child
 
@@ -133,9 +140,11 @@
             // sending height of the first <main> tag to the Pym parent
             // as a message instead of using pymChild.sendHeight, which sends the 
             // height of the <body> tag. 
-            mainElementHeight = document.getElementsByTagName('main')[0].offsetHeight.toString()
-			console.log('sendHeight',mainElementHeight)
-            pymChild.sendMessage('height', mainElementHeight);
+			setTimeout(()=>{
+				mainElementHeight = document.getElementsByTagName('main')[0].offsetHeight.toString()
+				console.log('sendHeight',mainElementHeight)
+				pymChild.sendMessage('height', mainElementHeight);
+			},250)	
         }
     }
 	$: if(w&&pymChild) {
@@ -224,7 +233,7 @@
 <div id="results">
 	<h2>Your basket</h2>
 	<p>
-		Average prices of items in [date] and the latest monthly and annual growth rate.
+		Average prices of items in {timeFormat("%B %Y")(lastmonth)} and the latest monthly and annual growth rate.
 	</p>
 
 	{#if selected.length>0}
@@ -238,6 +247,23 @@
 	<Summary {data}/>
 </div>
 {/if}
+
+<div>
+	<h2>Use and share</h2>
+	<div class="flex items-center gap-x-6 gap-y-0.5 lg:gap-x-8 flex-wrap ">
+		
+		<Share/>
+		
+
+		<Feedback/>
+
+		<DownloadData/> 
+
+		<Embed/>
+	</div>
+		
+	
+</div>
 
 </main>
 
@@ -260,7 +286,7 @@
 	}
 
 	:global(span.highlight){
-		background-color: #FFFF00;
+		background-color: #f0f762;
 	}
 
 	.bold {
@@ -314,4 +340,24 @@
     h1,h2,h3{
         margin:0;
     }
+
+
+	.gap-y-0\.5 {
+		row-gap: .125rem;
+	}
+
+	.gap-x-6 {
+	-moz-column-gap: 1.5rem;
+	column-gap: 1.5rem;
+	}
+	.items-center {
+		align-items: center;
+	}
+	.flex-wrap {
+		flex-wrap: wrap;
+	}
+	.flex {
+		display: flex;
+	}
+
 </style>
