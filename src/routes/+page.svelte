@@ -5,9 +5,8 @@
 	import { groups } from 'd3-array';
 	import { format } from 'd3-format';
 	import { timeParse, timeFormat } from 'd3-time-format';
-	import {quintOut} from 'svelte/easing';
+	import { quintOut } from 'svelte/easing';
 	import { crossfade,fade } from 'svelte/transition';
-    // import Icon from "./MaterialIcon.svelte";
 	import SortTable from "../components/helpers/SortTable.svelte";
 	import Summary from "../components/helpers/Summary.svelte";
 	import Share from "../components/helpers/Share.svelte"
@@ -17,6 +16,7 @@
 	import pym from "pym.js";
 
 	let items; //metadata
+	let itemsSorted
 	let avgprice;
 	let monthlygrowth;
 	let annualgrowth;
@@ -36,21 +36,29 @@
 
 	onMount(async () => {
 			(items = await csv(
-				'https://gist.githubusercontent.com/henryjameslau/8084919379b42b260e84c28ec7986612/raw/754a00aaba4c7d2ec759282732bec1f0cdad190e/metadata-lowest-category.csv',
+				'/metadata.csv',
 				autoType
 			)),
 			(avgprice = await csv(
-				'https://gist.githubusercontent.com/henryjameslau/3ea034526695d7987863c4d6076449d3/raw/0a8c8145e0085269b18de7dd725666c69035797d/avgprice.csv',
+				'./avgprice.csv',
 				autoType
 			)),
 			(monthlygrowth = await csv(
-				'https://gist.githubusercontent.com/henryjameslau/7b3e6c953c5efa15869d1f1dfadb4294/raw/d5b96cb7ff890a4d0edbd9bd0592d7a0c63e21c8/monthlygrowth.csv',
+				'./monthlygrowth.csv',
 				autoType
 			)),
 			(annualgrowth = await csv(
-				'https://gist.githubusercontent.com/henryjameslau/76f038ec284f08d65a3b224986ef57f3/raw/96ac1ccbbf88de2733aac4f1184a57ee78e3a8c5/annualgrowth.csv',
+				'./annualgrowth.csv',
 				autoType
 			));
+
+			itemsSorted = items.sort(
+		 	(a, b) => a['Category1'].toString().localeCompare(b['Category1']) || a['Category2'].toString().localeCompare(b['Category2']) ||a.ITEM_DESC.localeCompare(b.ITEM_DESC)
+			)
+
+			grouped = groups(itemsSorted,d=>d.Category1,d=>d.Category2)
+
+			console.log(grouped)
 
 			lastmonth=timeParse("%Y-%m-%d")(monthlygrowth.columns[monthlygrowth.columns.length-1])
 
@@ -104,10 +112,6 @@
 						]
 	}))
 
-	function scroll(){
-		y=allitems.scrollTop
-	}
-
     function removeItem(id){
         isChecked[id]=false;
 		updateHeight()
@@ -123,14 +127,7 @@
 		updateHeight()
 	}
 
-	function clearInput(){
-		filter=""
-	}
 
-	function input(){
-		typing = true;
-		setTimeout(()=>{typing=false;},200)
-	}
 
 	function updateHeight(event) {
         // note that i'm actually ignoring the event object itself
@@ -168,23 +165,6 @@
 		}
 	});
 
-	$: if(filter) regex = new RegExp(filter, "gi")
-
-	$: if(filter){
-		grouped = groups(items, (d) => d['lowestCategory']);
-		grouped = grouped.filter(d=>(d[0].match(regex)) || (d[1].some(e=>e.ITEM_DESC.match(regex))))
-			.map(function(d){
-			if(d[0].match(regex)){return [d[0],d[1]]}
-			else{return [d[0],d[1].filter(e=>e.ITEM_DESC.match(regex))]}
-		}) 
-	}
-
-	$:if(items&&!filter){
-		grouped = groups(items.sort(
-		 	(a, b) => a['lowestCategory'].toString().localeCompare(b['lowestCategory']) ||a.ITEM_DESC.localeCompare(b.ITEM_DESC)
-		), (d) => d['lowestCategory']);
-	}
-
 </script>
 <main>
 
@@ -198,35 +178,29 @@
 	<div id="input">
 	<h2>Add items to your basket</h2>
 	<p>Select items to add them to your basket.</p>
-	<div>
-		<label for="filter">Filter items:</label><input id="filter" type=text bind:value={filter} on:input={input}/><button on:click={clearInput}>Clear filter</button>
-	</div>
-	
-
-	{#if grouped}
-		<div bind:this={allitems} on:scroll={scroll} id="allitems">
-			<div style="opacity: {1 - Math.max(0, y / 40)}" id='scrollmore'>Scroll to see more items</div>
-			{#each grouped as groups}
-				<!-- https://stackoverflow.com/questions/3294576/javascript-highlight-substring-keeping-original-case-but-searching-in-case-inse -->
-				{#if groups[1].filter(e=>!selected.map(e=>+e[0]).includes(e.ITEM_ID)).length>0}
-				<h3 in:receive="{{key: groups[0]}}" out:send="{{key: groups[0]}}">{@html filter ? groups[0].replace(regex, (str)=> '<span class="highlight">'+str+'</span>') : groups[0]}</h3>
-				<div class="flex">
-					{#each groups[1].filter(e=>!selected.map(e=>+e[0]).includes(e.ITEM_ID)) as item(item.ITEM_ID)}
-						<div class="item" in:receive="{{key: item.ITEM_ID}}" out:send="{{key: item.ITEM_ID}}">
-
-							<input type="checkbox" id={item.ITEM_ID} on:change={handleChange} bind:checked={isChecked[item.ITEM_ID]} />
-							<label for={item.ITEM_ID}
-								><span class="bold">{@html filter ? item.ITEM_DESC.replace(regex, (str)=> '<span class="highlight">'+str+'</span>') : item.ITEM_DESC}</span>
-								{item['WEIGHT\\SIZE'] ? item['WEIGHT\\SIZE'] : ''}</label
-							>
+		{#if grouped}
+		{#each grouped as group}
+			<details>
+				<summary>{group[0]}</summary>
+				{#each group[1] as subgroup}
+					<details class='subgroup'>
+						<summary>{subgroup[0]}</summary>
+						<div class='flex'>
+						{#each subgroup[1] as item(item.ITEM_ID)}
+							<div>
+								<input type="checkbox" id={item.ITEM_ID} on:change={handleChange} bind:checked={isChecked[item.ITEM_ID]} />
+								<label for={item.ITEM_ID}>
+									<span class="bold">{item.ITEM_DESC}</span>
+									{item['WEIGHT\\SIZE'] ? item['WEIGHT\\SIZE'] : ''}
+								</label>
+							</div>
+						{/each}
 						</div>
-					{/each}
-				</div>
-				{/if}
-			{/each}
-			<div style="opacity: {1 - Math.max(0, y / 90)}" id='scrollmoremore'>Scroll more more ↓</div>
-		</div>
-	{/if}
+					</details>
+				{/each}
+			</details>
+		{/each}
+		{/if}
 	</div>
 </div>
 
@@ -252,14 +226,14 @@
 	<h2>Use and share</h2>
 	<div class="flex items-center gap-x-6 gap-y-0.5 lg:gap-x-8 flex-wrap ">
 		
-		<Share/>
+		<!-- <Share/>
 		
 
 		<Feedback/>
 
 		<DownloadData/> 
 
-		<Embed/>
+		<Embed/> -->
 	</div>
 		
 	
@@ -268,14 +242,9 @@
 </main>
 
 <style>
-	div#allitems:hover{
-		box-shadow: 3px 3px 3px rgb(236, 236, 236),-3px -3px 3px rgb(236, 236, 236),-3px 3px 3px rgb(236, 236, 236),3px -3px 3px rgb(236, 236, 236);
-	}
 
-	div.item {
-		margin: 5px;
-		border: 2px solid #206095;
-	}
+
+
 
 	div#top{
 		background-color: #E9EFF4;
@@ -289,25 +258,16 @@
 		background-color: #f0f762;
 	}
 
-	.bold {
-		font-weight: 700;
+	.subgroup{
+		margin-left:10px;
 	}
 
 	.flex {
 		display: flex;
 		flex-flow: wrap;
+		flex-direction: column;
 	}
 
-	div#allitems {
-		height: 400px;
-		overflow-y: scroll;
-		position: relative;
-		text-align: center;
-		padding-top: 2em;
-		box-sizing: border-box;
-		background-color: white;
-		margin-top: 10px;
-	}
 
 	div#results{
 		background-color: #F5F5F6;
@@ -321,23 +281,12 @@
 		padding: 25px;
 	}
 
-	div#scrollmore{
-		display: block;
-	}
-
-	div#scrollmoremore{
-		position:sticky;
-		bottom:0;
-		background:white;
-		pointer-events: none;
-		padding:1em 0em;
-	}
 
 	#results >h2{
 		color: #206095;
 	}
 
-    h1,h2,h3{
+    h1,h2{
         margin:0;
     }
 
