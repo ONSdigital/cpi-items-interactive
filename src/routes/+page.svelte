@@ -36,19 +36,19 @@
 
 	onMount(async () => {
 			(items = await csv(
-				'../metadata.csv',
+				'./metadata.csv',
 				autoType
 			)),
 			(avgprice = await csv(
-				'../avgprice.csv',
+				'./avgprice.csv',
 				autoType
 			)),
 			(monthlygrowth = await csv(
-				'../monthlygrowth.csv',
+				'./monthlygrowth.csv',
 				autoType
 			)),
 			(annualgrowth = await csv(
-				'../annualgrowth.csv',
+				'./annualgrowth.csv',
 				autoType
 			));
 
