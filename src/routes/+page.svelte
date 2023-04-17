@@ -14,6 +14,7 @@
 	import Embed from "../components/helpers/Embed.svelte"
 	import Feedback from "../components/helpers/Feedback.svelte"
 	import pym from "pym.js";
+	import Scrolly from "../components/helpers/Scrolly.svelte"
 
 	let items; //metadata
 	let itemsSorted
@@ -33,6 +34,7 @@
 	let w;
 	let mainElementHeight;
 	let lastmonth;
+	let value;
 
 	onMount(async () => {
 			(items = await csv(
@@ -178,7 +180,7 @@
 	<div id="input">
 	<h2>Add items to your basket</h2>
 	<p>Select items to add them to your basket.</p>
-		{#if grouped}
+		<!-- {#if grouped}
 		{#each grouped as group}
 			<details>
 				<summary>{group[0]}</summary>
@@ -200,6 +202,40 @@
 				{/each}
 			</details>
 		{/each}
+		{/if} -->
+		{#if grouped}
+		<div id="allitems">
+		<section id="scrolly">
+
+			{#if value}<h3><span>{grouped[value][0]}</span></h3>
+			{:else}<h3><span>{grouped[0][0]}</span></h3>
+			{/if}
+			<Scrolly bind:value>
+				{#each grouped as groups, i}
+					{@const active = value === i}
+					<div class="step" class:active>
+						<h4>{groups[0]}</h4>
+						{#each groups[1] as subgroup}
+							<h5>{subgroup[0]}</h5>
+							<div class="hflex">
+							{#each subgroup[1].filter(e=>!selected.map(e=>+e[0]).includes(e.ITEM_ID)) as item(item.ITEM_ID)}
+								<div class="item" in:receive="{{key: item.ITEM_ID}}" out:send="{{key: item.ITEM_ID}}">
+
+									<input type="checkbox" id={item.ITEM_ID} on:change={handleChange} bind:checked={isChecked[item.ITEM_ID]} />
+									<label for={item.ITEM_ID}
+										><span class="bold">{item.ITEM_DESC}</span>
+										{item['WEIGHT\\SIZE'] ? item['WEIGHT\\SIZE'] : ''}</label
+									>
+								</div>
+							
+							{/each}
+							</div>
+						{/each}
+					</div>
+				{/each}
+			</Scrolly>
+		</section>
+		</div>
 		{/if}
 	</div>
 </div>
@@ -242,8 +278,14 @@
 </main>
 
 <style>
+	.spacer {
+		height: 75vh;
+	}
 
-
+	h3 {
+		position: sticky;
+		top: 0.5em;
+	}
 
 
 	div#top{
@@ -268,9 +310,24 @@
 		flex-direction: column;
 	}
 
+	.bold {
+		font-weight: 700;
+	}
+
 	.hflex{
 		display:flex;
 		flex-flow: wrap;
+	}
+
+	div#allitems {
+		height: 400px;
+		overflow-y: scroll;
+		position: relative;
+		text-align: center;
+		padding-top: 2em;
+		box-sizing: border-box;
+		background-color: white;
+		margin-top: 10px;
 	}
 
 
