@@ -224,16 +224,16 @@
 
 <div>
 	<h2>Use and share</h2>
-	<div class="flex items-center gap-x-6 gap-y-0.5 lg:gap-x-8 flex-wrap ">
+	<div class="hflex items-center gap-x-6 gap-y-0.5 lg:gap-x-8 flex-wrap ">
 		
-		<!-- <Share/>
+		<Share/>
 		
 
 		<Feedback/>
 
 		<DownloadData/> 
 
-		<Embed/> -->
+		<Embed/>
 	</div>
 		
 	
@@ -266,6 +266,11 @@
 		display: flex;
 		flex-flow: wrap;
 		flex-direction: column;
+	}
+
+	.hflex{
+		display:flex;
+		flex-flow: wrap;
 	}
 
 
