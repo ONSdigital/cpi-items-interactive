@@ -9,15 +9,15 @@
 	<meta name="robots" content="noindex" />
 	<meta name="googlebot" content="indexifembedded" />
 	<meta http-equiv="content-security-policy" content="">
-		<link href="./_app/immutable/assets/_page.284e6c36.css" rel="stylesheet">
-		<link rel="modulepreload" href="./_app/immutable/entry/start.b9f45103.js">
+		<link href="./_app/immutable/assets/_page.39ec4782.css" rel="stylesheet">
+		<link rel="modulepreload" href="./_app/immutable/entry/start.14aa8382.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/index.61914f18.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/singletons.7599f14f.js">
-		<link rel="modulepreload" href="./_app/immutable/entry/app.683cd6a5.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/singletons.7a13b9e5.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/app.d5e93889.js">
 		<link rel="modulepreload" href="./_app/immutable/entry/layout.svelte.a1a3ac7a.js">
 		<link rel="modulepreload" href="./_app/immutable/entry/_layout.js.984db11e.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/_layout.da46b06b.js">
-		<link rel="modulepreload" href="./_app/immutable/entry/_page.svelte.f1f906fc.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/_page.svelte.c2dc96ce.js">
 </head>
 <style>
 	html {
@@ -42,15 +42,15 @@
 	<div style="display: contents">
 
 
-<main class="svelte-1bastb2"><div id="top" class="svelte-1bastb2"><div id="title" class="svelte-1bastb2"><h1 class="svelte-1bastb2">How is the average price of items changing over time?</h1>
-		<p class="svelte-1bastb2">Use our interactive to see how the price of different items have changed since last year.</p>
-		<hr class="white svelte-1bastb2"></div>
+<main class="svelte-1ouomzh"><div id="top" class="svelte-1ouomzh"><div id="title" class="svelte-1ouomzh"><h1 class="svelte-1ouomzh">How is the average price of items changing over time?</h1>
+		<p class="svelte-1ouomzh">Use our interactive to see how the price of different items have changed since last year.</p>
+		<hr class="white svelte-1ouomzh"></div>
 	
 
-	<div class="input svelte-1bastb2"><h2 class="svelte-1bastb2">Shopping items search</h2>
-		<p class="svelte-1bastb2">Search for items from the list to add to your shopping basket.</p>
+	<div class="input svelte-1ouomzh"><h2 class="svelte-1ouomzh">Shopping items search</h2>
+		<p class="svelte-1ouomzh">Search for items from the list to add to your shopping basket.</p>
 
-		<div style="display: contents; --border-radius:0; --border:2px solid #206095;">
+		<div style="display: contents; --placeholder-color:#206095; --border-radius:0; --border-focused:2px solid #206095; --border-hover:2px solid #206095; --border:2px solid #206095;">
 
 <div class="svelte-select  svelte-apvs86" style="">
 
@@ -60,7 +60,7 @@
 
     <div class="value-container svelte-apvs86">
 
-        <input autocapitalize="none" autocomplete="off" autocorrect="off" spellcheck="false" tabindex="0" type="text" aria-autocomplete="list" placeholder="Type to search for items" style="" class="svelte-apvs86" value=""></div>
+        <input autocapitalize="none" autocomplete="off" autocorrect="off" spellcheck="false" tabindex="0" type="text" aria-autocomplete="list" id="ITEM_ID" placeholder="Type to search for items" style="" class="svelte-apvs86" value=""></div>
 
     <div class="indicators svelte-apvs86">
 
@@ -75,31 +75,30 @@
     
 </div></div>
 
-		<div id="searchbuttons" class="hflex svelte-1bastb2"><button class="svelte-1bastb2 disabled">Add to basket</button>
-			<button class="svelte-1bastb2">Clear search</button>
+		<div id="searchbuttons" class="hflex svelte-1ouomzh"><button class="disabled svelte-1ouomzh">Add to basket</button>
+			
 			</div>	
+		<hr class="white svelte-1ouomzh">
+
+		<h2 class="svelte-1ouomzh">Shopping items list</h2>
+		<p class="svelte-1ouomzh">Choose items from our shopping list to add them to your basket.</p></div>
+
+	<div id="receiptheader" class="svelte-1ouomzh"><svg viewBox="0 0 360 6" class="svelte-1ouomzh"><path d="M 0,6 L 12,0 L 24,6 L 36,0 L 48,6 L 60,0 L 72,6 L 84,0 L 96,6 L 108,0 L 120,6 L 132,0 L 144,6 L 156,0 L 168,6 L 180,0 L 192,6 L 204,0 L 216,6 L 228,0 L 240,6 L 252,0 L 264,6 L 276,0 L 288,6 L 300,0 L 312,6 L 324,0 L 336,6 L 348,0 L 360,6" fill="#F8FAFC" class="svelte-1ouomzh"></path></svg></div>
+
+	<div class="input receiptbackground svelte-1ouomzh">
 		
-		<hr class="white svelte-1bastb2">
+			<div id="allitems" class="svelte-1ouomzh"></div></div></div>
 
-		<h2 class="svelte-1bastb2">Shopping items list</h2>
-		<p class="svelte-1bastb2">Choose items from our shopping list to add them to your basket.</p></div>
-
-	<div id="receiptheader" class="svelte-1bastb2"><svg viewBox="0 0 360 6" class="svelte-1bastb2"><path d="M 0,6 L 12,0 L 24,6 L 36,0 L 48,6 L 60,0 L 72,6 L 84,0 L 96,6 L 108,0 L 120,6 L 132,0 L 144,6 L 156,0 L 168,6 L 180,0 L 192,6 L 204,0 L 216,6 L 228,0 L 240,6 L 252,0 L 264,6 L 276,0 L 288,6 L 300,0 L 312,6 L 324,0 L 336,6 L 348,0 L 360,6" fill="#F8FAFC" class="svelte-1bastb2"></path></svg></div>
-
-	<div class="input receiptbackground svelte-1bastb2">
-		
-			<div id="allitems" class="svelte-1bastb2"></div></div></div>
-
-<div id="results" class="svelte-1bastb2"><h2 class="svelte-1bastb2">Your basket</h2>
-	<p class="svelte-1bastb2">Average prices of items in  0NaN and the latest monthly and annual growth rate.
+<div id="results" class="svelte-1ouomzh"><h2 class="svelte-1ouomzh">Your basket</h2>
+	<p class="svelte-1ouomzh">Average prices of items in  0NaN and the latest monthly and annual growth rate.
 	</p>
 
 	</div>
 
 
 
-<div class="svelte-1bastb2"><h2 class="svelte-1bastb2">Use and share</h2>
-	<div class="hflex items-center gap-x-6 gap-y-0.5 lg:gap-x-8 flex-wrap  svelte-1bastb2"><button class="flex items-center gap-2 custom-ring -ml-0.5 svelte-t7zoo5 hyperlink"><div class="text-2xl text-ons-black svelte-t7zoo5"><svg class="c h-16 w-16 inline svelte-2h3iom" viewBox="0 0 48 48" style="transform: rotate(0deg)"><path d="M36.35 44q-2.35 0-4.025-1.675Q30.65 40.65 30.65 38.3q0-.35.075-.825t.225-.875L15.8 27.8q-.75.85-1.85 1.375t-2.25.525q-2.35 0-4.025-1.675Q6 26.35 6 24q0-2.4 1.675-4.05T11.7 18.3q1.15 0 2.2.45 1.05.45 1.9 1.3l15.15-8.7q-.15-.35-.225-.8-.075-.45-.075-.85 0-2.4 1.675-4.05T36.35 4q2.4 0 4.05 1.65t1.65 4.05q0 2.35-1.65 4.025-1.65 1.675-4.05 1.675-1.15 0-2.225-.375Q33.05 14.65 32.3 13.8l-15.15 8.4q.1.4.175.925.075.525.075.875t-.075.75q-.075.4-.175.8l15.15 8.6q.75-.7 1.75-1.125 1-.425 2.3-.425 2.4 0 4.05 1.65t1.65 4.05q0 2.35-1.65 4.025Q38.75 44 36.35 44Zm0-31.6q1.15 0 1.925-.775.775-.775.775-1.925t-.775-1.925Q37.5 7 36.35 7t-1.925.775q-.775.775-.775 1.925t.775 1.925q.775.775 1.925.775ZM11.7 26.7q1.15 0 1.925-.775.775-.775.775-1.925t-.775-1.925Q12.85 21.3 11.7 21.3t-1.925.775Q9 22.85 9 24t.775 1.925q.775.775 1.925.775ZM36.35 41q1.15 0 1.925-.775.775-.775.775-1.925t-.775-1.925Q37.5 35.6 36.35 35.6t-1.925.775q-.775.775-.775 1.925t.775 1.925Q35.2 41 36.35 41Zm0-31.3ZM11.7 24Zm24.65 14.3Z"></path></svg></div>
+<div class="svelte-1ouomzh"><h2 class="svelte-1ouomzh">Use and share</h2>
+	<div class="hflex items-center gap-x-6 gap-y-0.5 lg:gap-x-8 flex-wrap  svelte-1ouomzh"><button class="flex items-center gap-2 custom-ring -ml-0.5 svelte-t7zoo5 hyperlink"><div class="text-2xl text-ons-black svelte-t7zoo5"><svg class="c h-16 w-16 inline svelte-2h3iom" viewBox="0 0 48 48" style="transform: rotate(0deg)"><path d="M36.35 44q-2.35 0-4.025-1.675Q30.65 40.65 30.65 38.3q0-.35.075-.825t.225-.875L15.8 27.8q-.75.85-1.85 1.375t-2.25.525q-2.35 0-4.025-1.675Q6 26.35 6 24q0-2.4 1.675-4.05T11.7 18.3q1.15 0 2.2.45 1.05.45 1.9 1.3l15.15-8.7q-.15-.35-.225-.8-.075-.45-.075-.85 0-2.4 1.675-4.05T36.35 4q2.4 0 4.05 1.65t1.65 4.05q0 2.35-1.65 4.025-1.65 1.675-4.05 1.675-1.15 0-2.225-.375Q33.05 14.65 32.3 13.8l-15.15 8.4q.1.4.175.925.075.525.075.875t-.075.75q-.075.4-.175.8l15.15 8.6q.75-.7 1.75-1.125 1-.425 2.3-.425 2.4 0 4.05 1.65t1.65 4.05q0 2.35-1.65 4.025Q38.75 44 36.35 44Zm0-31.6q1.15 0 1.925-.775.775-.775.775-1.925t-.775-1.925Q37.5 7 36.35 7t-1.925.775q-.775.775-.775 1.925t.775 1.925q.775.775 1.925.775ZM11.7 26.7q1.15 0 1.925-.775.775-.775.775-1.925t-.775-1.925Q12.85 21.3 11.7 21.3t-1.925.775Q9 22.85 9 24t.775 1.925q.775.775 1.925.775ZM36.35 41q1.15 0 1.925-.775.775-.775.775-1.925t-.775-1.925Q37.5 35.6 36.35 35.6t-1.925.775q-.775.775-.775 1.925t.775 1.925Q35.2 41 36.35 41Zm0-31.3ZM11.7 24Zm24.65 14.3Z"></path></svg></div>
     Share this basket
   </button>
 		
@@ -112,18 +111,7 @@
         <div class="svelte-1etb6vv">Download data</div></a>
   </div> 
 
-		<div class=""><button class="flex items-center gap-2 custom-ring hyperlink  svelte-fpqzk1"><div class="text-2xl text-ons-black svelte-fpqzk1"><svg class="c h-16 w-16 inline svelte-2h3iom" viewBox="0 0 48 48" style="transform: rotate(0deg)"><path d="M32.95 34.95q-.45.45-1.05.425-.6-.025-1.05-.475-.45-.45-.45-1.075t.45-1.075l8.85-8.85-8.8-8.8q-.45-.45-.425-1.075.025-.625.475-1.075.45-.45 1.075-.45t1.075.45l9.85 9.9q.45.45.45 1.05 0 .6-.45 1.05Zm-18-.15-9.9-9.85q-.45-.45-.45-1.05 0-.6.45-1.05l10-10q.45-.45 1.075-.45t1.075.45q.45.45.45 1.075T17.2 15l-8.9 8.9 8.8 8.8q.45.45.45 1.05 0 .6-.45 1.05-.45.45-1.075.45t-1.075-.45Z"></path></svg></div>
-      <div>Embed this tool</div></button></div>
-  
-  <dialog class="m-auto max-w-5xl p-6"><h2>Embed this tool</h2>
-
-    <button class="custom-ring svelte-fpqzk1" title="Close dialog" value="cancel"><svg class="c h-16 w-16 inline svelte-2h3iom" viewBox="0 0 48 48" style="transform: rotate(0deg)"><path d="M24 26.1 13.5 36.6q-.45.45-1.05.45-.6 0-1.05-.45-.45-.45-.45-1.05 0-.6.45-1.05L21.9 24 11.4 13.5q-.45-.45-.45-1.05 0-.6.45-1.05.45-.45 1.05-.45.6 0 1.05.45L24 21.9l10.5-10.5q.45-.45 1.05-.45.6 0 1.05.45.45.45.45 1.05 0 .6-.45 1.05L26.1 24l10.5 10.5q.45.45.45 1.05 0 .6-.45 1.05-.45.45-1.05.45-.6 0-1.05-.45Z"></path></svg></button>
-    <div class="px-4 border-y-8 border-ons-grey-5 bg-ons-grey-5 text-sm font-mono break-all h-24 overflow-y-scroll">EMBED CODE HERE
-      </div>
-      <div class="flex flex-col gap-3 pt-1 svelte-fpqzk1"><button class="flex items-center justify-center gap-2 custom-ring bg-ons-leaf-green hover:bg-[#0d753c] shadow shadow-[#073d20] text-onswhite font-semibold rounded py-3 px-4 whitespace-nowrap svelte-fpqzk1" style="text-rendering: optimizeLegibility"><div>Copy to clipboard</div>
-          <div class="text-2xl svelte-fpqzk1"><svg class="c h-16 w-16 inline svelte-2h3iom" viewBox="0 0 48 48" style="transform: rotate(0deg)"><path d="M15 37.95q-1.25 0-2.125-.875T12 34.95v-28q0-1.25.875-2.125T15 3.95h22q1.25 0 2.125.875T40 6.95v28q0 1.25-.875 2.125T37 37.95Zm0-3h22v-28H15v28Zm-6 9q-1.25 0-2.125-.875T6 40.95V12.3q0-.65.425-1.075Q6.85 10.8 7.5 10.8q.65 0 1.075.425Q9 11.65 9 12.3v28.65h22.2q.65 0 1.075.425.425.425.425 1.075 0 .65-.425 1.075-.425.425-1.075.425Zm6-37v28-28Z"></path></svg></div></button>
-        </div> 
-  </dialog></div></div>
+		</div></div>
 
 </main>
 
@@ -131,7 +119,7 @@
 			
 			<script>
 				{
-					__sveltekit_93q386 = {
+					__sveltekit_1h3ppqp = {
 						env: {},
 						base: new URL(".", location).pathname.slice(0, -1),
 						element: document.currentScript.parentElement
@@ -140,10 +128,10 @@
 					const data = [null,null];
 
 					Promise.all([
-						import("./_app/immutable/entry/start.b9f45103.js"),
-						import("./_app/immutable/entry/app.683cd6a5.js")
+						import("./_app/immutable/entry/start.14aa8382.js"),
+						import("./_app/immutable/entry/app.d5e93889.js")
 					]).then(([kit, app]) => {
-						kit.start(app, __sveltekit_93q386.element, {
+						kit.start(app, __sveltekit_1h3ppqp.element, {
 							node_ids: [0, 2],
 							data,
 							form: null,

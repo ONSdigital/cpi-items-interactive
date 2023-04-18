@@ -6,7 +6,8 @@
     let complete = false;
   
     async function handleClick() {
-      const url = 'page'//$page.url.toString();
+
+      const url = selected ? window.location+'#'+selected.map(d=>d[0]).join(','): window.location;
       const text = "Explore how the average price of items is changing";
       const title = `ONS Shopping Price Comparison Tool`;
   
@@ -22,9 +23,6 @@
       }
     }
 
-    $:if(selected){
-      console.log(selected)
-    }
   </script>
   
   <button class="flex items-center gap-2 custom-ring -ml-0.5" on:click={handleClick} class:hyperlink={!complete}>

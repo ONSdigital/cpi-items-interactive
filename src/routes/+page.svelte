@@ -30,7 +30,7 @@
 	let w;
 	let mainElementHeight;
 	let lastmonth;
-	let value;
+	let value="";
 	let visible = false;
 
 	onMount(async () => {
@@ -57,7 +57,6 @@
 
 			grouped = groups(itemsSorted,d=>d.Category1,d=>d.Category2)
 
-			console.log(grouped)
 
 			lastmonth=timeParse("%Y-%m-%d")(monthlygrowth.columns[monthlygrowth.columns.length-1])
 
@@ -67,7 +66,8 @@
 			let checkitems = new RegExp('[0-9]{6}')
 			let parent = new URLSearchParams(document.location.search).get("parentUrl");
 			let child = window.location.href.includes('#')
-			let childcode = child ? child.split("#")[1].split(',').map(d=>+d) : null
+			let childpage = window.location.href
+			let childcode = child ? childpage.split("#")[1].split(',').map(d=>+d) : null
 			let parentcode = parent ? parent.split("#")[1].split(',').map(d=>+d) : null;
 			
 			if (parentcode && parentcode.every(d=>checkitems.test(d))){
@@ -78,6 +78,7 @@
 				childcode.forEach(d=>isChecked[d]=true)
 				
 			}
+
 	});
 
 
@@ -85,8 +86,8 @@
 		{label:"Name",prop:"Name",sort:true,type:"text"},
 		{label:"Weight or size",prop:"Weight or size",sort:true,type:"text",formatFn:(d)=> d=='null' ? '' : d},
 		{label:"Average price",prop:"Average price",sort:true,type:"number",formatFn:(d)=>'£'+format(',.2f')(d)},
-		{label:"Monthly growth",prop:"Monthly growth",sort:true,type:"number",formatFn:(d)=>format('.1f')(d)+'%'},
-		{label:"Annual growth",prop:"Annual growth",sort:true,type:"number",formatFn:(d)=>format('.1f')(d)+'%'}
+		{label:"Price last year",prop:"pricelastyear",sort:true,type:"number",formatFn:(d)=>d==null ? 'Unavailable' : '£'+format(',.2f')(d)},
+		{label:"Annual growth",prop:"Annual growth",sort:true,type:"number",formatFn:(d)=>d==null ? 'Unavailable' : format('.1f')(d)+'%'}
 	]
 
 	$: selected = Object.entries(isChecked).filter(d=>d[1]==true);
@@ -108,7 +109,8 @@
 		'timeline':Object.entries(avgprice.filter((d) => d.ITEM_ID == item[0])[0]).filter(d=>d[0]!='ITEM_ID').map(d=>({date:timeParse("%Y-%m-%d")(d[0]),'value':d[1]})),
 		'pricelastmonth':avgprice.filter((d) => d.ITEM_ID == item[0])[0][
 							avgprice.columns[avgprice.columns.length - 2]
-						]
+						],
+		'pricelastyear':avgprice.filter((d)=>d.ITEM_ID == item[0])[0][avgprice.columns[avgprice.columns.length-13]]
 	}))
 
     function removeItem(id){
@@ -148,7 +150,6 @@
             // height of the <body> tag. 
 			setTimeout(()=>{
 				mainElementHeight = document.getElementsByTagName('main')[0].offsetHeight.toString()
-				console.log('sendHeight',mainElementHeight)
 				pymChild.sendMessage('height', mainElementHeight);
 			},250)	
         }
@@ -189,18 +190,15 @@
 		<h2>Shopping items search</h2>
 		<p>Search for items from the list to add to your shopping basket.</p>
 
-		<Select --border-radius="0" --border="2px solid #206095" placeholder="Type to search for items" items={items} groupBy={(item)=>item.Category1} label="ITEM_DESC" clearable={false} itemID="ITEM_ID" bind:value />
+		<Select --placeholder-color="#206095" --border-radius="0" --border-focused="2px solid #206095" --border-hover="2px solid #206095" --border="2px solid #206095" placeholder="Type to search for items" items={items} groupBy={(item)=>item.Category1} label="ITEM_DESC" clearable={false} id="ITEM_ID" bind:value />
 
 		<div id="searchbuttons" class='hflex'>
-			<button class:disabled="{value != ''}" on:click={addFromSearch(value.ITEM_ID)}>Add to basket</button>
-			<button on:click={clearSearch}>Clear search</button>
+			<button class="{value == '' ? "disabled" : ""}" on:click={addFromSearch(value.ITEM_ID)}>Add to basket</button>
+			{#if value}<button on:click={clearSearch}>Clear search</button>{/if}
 			{#if visible}
 			<div in:scale out:fade id='itemadded'>Item added!<img height=14 width=14 alt="" src='./tick.svg'/></div>
 			{/if}
 		</div>	
-		{#if value}
-		{value}
-		{/if}
 		<hr class="white"/>
 
 		<h2>Shopping items list</h2>
@@ -283,7 +281,7 @@
 
 		<DownloadData/> 
 
-		<Embed/>
+		<!-- <Embed/> -->
 	</div>
 		
 	
@@ -390,6 +388,9 @@
 		background-color: #F8FAFC;
 	}
 
+	:global(.focused){
+		outline:3px solid orange;
+	}
 
 	div#results{
 		background-color: #F5F5F6;
@@ -405,6 +406,7 @@
 
 	.item{
 		position: relative;
+		margin:2px 0;
 	}
 
 	.item span{
