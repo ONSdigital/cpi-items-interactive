@@ -19,6 +19,10 @@
   
 
   <style>
+    div{
+      font-size: 16px;
+    }
+
     .text-2xl{
         font-size: 1.5rem;
         line-height: 2rem;

@@ -1,11 +1,13 @@
 <script>
     import Icon from "./MaterialIcon.svelte";
   
+    export let selected = []
+
     let complete = false;
   
     async function handleClick() {
       const url = 'page'//$page.url.toString();
-      const text = "Explore this ONS Census map";
+      const text = "Explore how the average price of items is changing";
       const title = `ONS Shopping Price Comparison Tool`;
   
       try {
@@ -18,6 +20,10 @@
       } catch (e) {
         console.error(e);
       }
+    }
+
+    $:if(selected){
+      console.log(selected)
     }
   </script>
   
@@ -60,6 +66,9 @@
         appearance: button;
         background-color: transparent;
         background-image: none;
+        border:none;
+        font-size: 16px;
+
     }
     .hyperlink{
         --tw-text-opacity: 1;

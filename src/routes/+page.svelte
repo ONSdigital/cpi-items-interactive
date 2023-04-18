@@ -6,7 +6,7 @@
 	import { format } from 'd3-format';
 	import { timeParse, timeFormat } from 'd3-time-format';
 	import { quintOut } from 'svelte/easing';
-	import { crossfade,fade } from 'svelte/transition';
+	import { crossfade,fade,scale } from 'svelte/transition';
 	import SortTable from "../components/helpers/SortTable.svelte";
 	import Summary from "../components/helpers/Summary.svelte";
 	import Share from "../components/helpers/Share.svelte"
@@ -14,29 +14,24 @@
 	import Embed from "../components/helpers/Embed.svelte"
 	import Feedback from "../components/helpers/Feedback.svelte"
 	import pym from "pym.js";
-	import Fuzzy from "svelte-fuzzy";
-
+	import Select from 'svelte-select'
+	
 	let items; //metadata
 	let itemsSorted
 	let avgprice;
 	let monthlygrowth;
 	let annualgrowth;
-	let allitems
 	let isChecked = {}; // object for seeing which items are selected
 	let grouped; // nested items with hierarchy
 	let selected;
 	let checkedOrder= {}; //object to store which order the items are selected in
-	let y;
 	let filter;
-	let regex;
-	let typing = false;
 	let pymChild;
 	let w;
 	let mainElementHeight;
 	let lastmonth;
 	let value;
-	let query;
-	let formatted = [];
+	let visible = false;
 
 	onMount(async () => {
 			(items = await csv(
@@ -131,14 +126,17 @@
 		updateHeight()
 	}
 
-	function clearInput(){
-		filter=""
-	}
-	function input(){
-		typing = true;
-		setTimeout(()=>{typing=false;},200)
+	function addFromSearch(id){
+		isChecked[id]=true;
+		updateHeight()
+		clearSearch()
+		visible=true;
+		setTimeout(()=>visible=false,1500)
 	}
 
+	function clearSearch(){
+		value=""
+	}
 
 	function updateHeight(event) {
         // note that i'm actually ignoring the event object itself
@@ -176,24 +174,6 @@
 		}
 	});
 
-	$: if(filter) regex = new RegExp(filter, "gi")
-
-	$: if(filter){
-		grouped = groups(itemsSorted,d=>d.Category1,d=>d.Category2)
-		grouped = grouped.filter(d=>(d[1].some(e=>e[0].match(regex))) || (d[1].some(e=>e[1].some(f=>f.ITEM_DESC.match(regex)))))
-		.map(function(d){
-		 	if(d[1].some(e=>e[0].match(regex))){return [d[0],d[1].filter(e=>e[0].match(regex))]}
-			else{
-				return [d[0],d[1].filter(e=>e[1].some(f=>f.ITEM_DESC.match(regex))).filter(e=>e[1].filter(f=>f.ITEM_DESC.match(regex)))]
-			}
-		}) 
-		console.log(grouped)
-	}
-	$:if(itemsSorted&&!filter){
-		grouped = groups(itemsSorted,d=>d.Category1,d=>d.Category2)
-	}
-
-
 </script>
 <main>
 
@@ -209,24 +189,18 @@
 		<h2>Shopping items search</h2>
 		<p>Search for items from the list to add to your shopping basket.</p>
 
-		<input bind:value={query}/>
-		<button on:click={() => (query = "")}>Clear</button>
+		<Select --border-radius="0" --border="2px solid #206095" placeholder="Type to search for items" items={items} groupBy={(item)=>item.Category1} label="ITEM_DESC" clearable={false} itemID="ITEM_ID" bind:value />
 
-		<Fuzzy {query} data={items} options={{keys:["ITEM_DESC"]}} bind:formatted />
-
-		{#each formatted.slice(0,10) as item}
-			{#each item as line}
-				<li>
-				{#each line as { matches, text }}
-					{#if matches}
-					<mark>{text}</mark>
-					{:else}
-					{text}
-					{/if}
-				{/each}
-				</li>
-			{/each}
-		{/each}
+		<div id="searchbuttons" class='hflex'>
+			<button class:disabled="{value != ''}" on:click={addFromSearch(value.ITEM_ID)}>Add to basket</button>
+			<button on:click={clearSearch}>Clear search</button>
+			{#if visible}
+			<div in:scale out:fade id='itemadded'>Item added!<img height=14 width=14 alt="" src='./tick.svg'/></div>
+			{/if}
+		</div>	
+		{#if value}
+		{value}
+		{/if}
 		<hr class="white"/>
 
 		<h2>Shopping items list</h2>
@@ -302,7 +276,7 @@
 	<h2>Use and share</h2>
 	<div class="hflex items-center gap-x-6 gap-y-0.5 lg:gap-x-8 flex-wrap ">
 		
-		<Share/>
+		<Share {selected} />
 		
 
 		<Feedback/>
@@ -338,6 +312,7 @@
 	div#title, div.input{
 		padding:25px;
 		padding-bottom: 0;
+		padding-top:0;
 	}
 
 	.white{
@@ -363,36 +338,37 @@
 		line-height: 1.4;
 		margin: 0 1rem 0 0;
 		display: inline-block;
-		font-size: 1rem;
+		font-size: 18px;
 		font-weight: 700;
 		text-underline-position: under;
 		transform:translateY(-1px)
 	}
 
 	.ons-details__icon{
-	top: .8rem;
-	display: inline-block;
-	fill: var(--ons-color-text-link);
-	height: 1.5rem;
-	left: -.15rem;
-	position: absolute;
-	width: 1.5rem;
-}
+		top: .8rem;
+		display: inline-block;
+		fill: var(--ons-color-text-link);
+		height: 1.5rem;
+		left: -.15rem;
+		position: absolute;
+		width: 1.5rem;
+	}
 
-.ons-svg-icon {
-	height: 1rem;
-	vertical-align: middle;
-	width: 1rem;
-}
+	.ons-svg-icon {
+		height: 1rem;
+		vertical-align: middle;
+		width: 1rem;
+	}
 
-details[open] .ons-details__icon {
-	left: -.1rem;
-	top: 1.2rem;
-	-webkit-transform: rotate(90deg);
-	transform: rotate(90deg);
-}
+	details[open] .ons-details__icon {
+		left: -.1rem;
+		top: 1.2rem;
+		-webkit-transform: rotate(90deg);
+		transform: rotate(90deg);
+	}
 
 	.bold {
+		font-size:16px;
 		font-weight: 600;
 	}
 
@@ -410,10 +386,8 @@ details[open] .ons-details__icon {
 		overflow-y: scroll;
 		position: relative;
 		text-align: left;
-		padding-top: 2em;
+		padding-top: 1.5em;
 		background-color: #F8FAFC;
-		margin-top: 10px;
-
 	}
 
 
@@ -431,6 +405,10 @@ details[open] .ons-details__icon {
 
 	.item{
 		position: relative;
+	}
+
+	.item span{
+		font-size: 16px;
 	}
 
 	input[type=checkbox] {
@@ -453,22 +431,56 @@ details[open] .ons-details__icon {
 		padding: 0 10px 0 33px;
 		cursor: pointer;
 		display: block;
-	width: 100%;
+		width: 100%;
+	}
 
+
+	#searchbuttons button{
+		height:40px;
+		background: #0F8243;
+		color:white;
+		border: none;
+		box-sizing: border-box;
+		font-size: 14px;
+		font-weight:700;
+		padding: 12px 10px;
+		margin: 20px 20px 20px 0;
+	}
+
+	#searchbuttons button:focus{
+		outline: 3px solid #F39431;
+	}
+
+	#searchbuttons button.disabled{
+		background:#9FCDB4;
+	}
+
+	#itemadded{
+		height:40px;
+		background-color: #206095;
+		color: white;
+		font-weight: 700;
+		font-size:14px;
+		padding: 12px 10px;
+		margin: 20px 20px 20px 0;
+	}
+
+	#itemadded img{
+		margin-left:10px;
 	}
 
 	#results >h2{
 		color: #206095;
 	}
 
-    h1,h2{
+
+	h1,h2{
         margin:0;
     }
 
-
 	h3{
 		font-family: Open Sans;
-		font-size: 18px;
+		font-size: 16px;
 		font-weight: 700;
 		line-height: 25px;
 		letter-spacing: 0em;

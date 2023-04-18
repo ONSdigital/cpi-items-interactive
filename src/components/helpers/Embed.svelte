@@ -77,6 +77,8 @@
         appearance: button;
         background-color: transparent;
         background-image: none;
+        border:none;
+        font-size: 16px;
     }
     .hyperlink{
         --tw-text-opacity: 1;
