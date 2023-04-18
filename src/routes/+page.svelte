@@ -32,6 +32,7 @@
 	let lastmonth;
 	let value="";
 	let visible = false;
+	let sortOrder = ["Food and drink"]
 
 	onMount(async () => {
 			(items = await csv(
@@ -52,7 +53,7 @@
 			));
 
 			itemsSorted = items.sort(
-		 	(a, b) => a['Category1'].toString().localeCompare(b['Category1']) || a['Category2'].toString().localeCompare(b['Category2']) ||a.ITEM_DESC.localeCompare(b.ITEM_DESC)
+		 	(a, b) => sortOrder.indexOf(b['Category1']) - sortOrder.indexOf(a['Category1']) || a['Category1'].toString().localeCompare(b['Category1']) || a['Category2'].toString().localeCompare(b['Category2']) ||a.ITEM_DESC.localeCompare(b.ITEM_DESC)
 			)
 
 			grouped = groups(itemsSorted,d=>d.Category1,d=>d.Category2)
@@ -190,7 +191,7 @@
 		<h2>Shopping items search</h2>
 		<p>Search for items from the list to add to your shopping basket.</p>
 
-		<Select --placeholder-color="#206095" --border-radius="0" --border-focused="2px solid #206095" --border-hover="2px solid #206095" --border="2px solid #206095" placeholder="Type to search for items" items={items} groupBy={(item)=>item.Category1} label="ITEM_DESC" clearable={false} id="ITEM_ID" bind:value />
+		<Select --selected-item-color="#206095" --item-hover-color="#206095" --item-color="#206095" --group-title-color="#206095" --group-title-text-transform="none" --placeholder-color="#206095" --border-radius="0" --border-focused="2px solid #206095" --border-hover="2px solid #206095" --border="2px solid #206095" placeholder="Type to search for items" items={items} groupBy={(item)=>item.Category1} label="ITEM_DESC" clearable={false} id="ITEM_ID" bind:value />
 
 		<div id="searchbuttons" class='hflex'>
 			<button class="{value == '' ? "disabled" : ""}" on:click={addFromSearch(value.ITEM_ID)}>Add to basket</button>
