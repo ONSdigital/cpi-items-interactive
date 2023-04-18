@@ -14,7 +14,7 @@ let fmt=format(",.2f")
 $: if(data.length>0){
     total = data.reduce((acc,cur)=>acc+cur['Average price'],0)
     totallastmonth = data.reduce((acc,cur)=>acc+cur['pricelastmonth'],0)
-    totallastyear = data.reduce((acc,cur)=>acc=cur['pricelastyear'],0)
+    totallastyear = data.reduce((acc,cur)=>acc+cur['pricelastyear'],0)
     pricedifflastmonth=total-totallastmonth
     pricedifflastyear=total-totallastyear
     // https://seanconnolly.dev/javascript-find-element-with-max-value
@@ -22,7 +22,7 @@ $: if(data.length>0){
         return prev['Annual growth'] > curr['Annual growth'] ? prev : curr
     })
 
-    console.log(maxannualgrowth['Annual growth'])
+    console.log(pricedifflastyear)
 }
 
 function lowercasefirstletter(string) {
