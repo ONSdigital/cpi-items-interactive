@@ -108,7 +108,7 @@
 			<tr in:receive="{{key: r.id}}" out:send="{{key: r.id}}" style={r.style}
 						class={r.class} on:click={() => dispatch("chart", r)}>
 				<td>
-					<button aria-label="Remove item" on:click={()=>dispatch('remove',r.id)}>
+					<button class='remove' aria-label="Remove item" on:click={()=>dispatch('remove',r.id)}>
 					</button>
 				</td>
 				{#each columns as { label, prop, type, formatFn = (d) => d }}
@@ -140,7 +140,12 @@
 		border: none;
 	}
 
-	button:hover,button:focus{
+	button.remove:hover{
+		background: url('../../../close-icon-hover.svg');
+	}
+	
+	
+	button:focus{
 		outline: 3px solid #ffa23a;
 		position: relative;
 		outline-offset: 0px;
@@ -156,7 +161,7 @@
 	}
 	
 	td {
-		vertical-align: bottom;
+		vertical-align: top;
 		line-height: 1.2;
 		font-weight: normal;
 		padding: 8px;
@@ -192,28 +197,36 @@
 		text-align: left;
 		font-weight: bold;
 		position: relative;
+		font-size:14px;
 	}
+
 	
 	th.is-sortable button:after {
-		content: "⇅";
+		content: url('../../../double-arrow.svg');
 		display: flex;
 		position: absolute;
-		bottom: 0.5em;
+		bottom: 1.2em;
 		right: 0;
-		width: 1.25em;
+		width: 1.2em;
+		height: 1.2em;
 		justify-content: center;
 		align-items: flex-end;
-		opacity: 0.5;
+		/* opacity: 0.5; */
 	}
 	th.is-sortable.is-asc button:after {
-		content: "↑";
+		content: url('../../../arrow.svg');
 		visibility: visible;
 		opacity: 1;
+		height: 0.6em;
+		width:0.6em;
 	}
 	th.is-sortable.is-desc button:after {
-		content: "↓";
+		content:url('../../../arrow.svg');
 		visibility: visible;
 		opacity: 1;
+		transform: rotate(180deg);
+		height: 0.6em;
+		width:0.6em;
 	}
 	th.is-number button,
 	td.is-number {

@@ -12,9 +12,11 @@
 	import Share from "../components/helpers/Share.svelte"
 	import DownloadData from "../components/helpers/DownloadData.svelte";
 	import Embed from "../components/helpers/Embed.svelte"
-	import Feedback from "../components/helpers/Feedback.svelte"
+	import Feedback from "../components/helpers/Feedback.svelte";
 	import pym from "pym.js";
-	import Select from 'svelte-select'
+	import Select from 'svelte-select';
+	import ButtonGroup from '../components/helpers/ButtonGroup.svelte';
+	import Header from '../components/helpers/Header.svelte'
 	
 	let items; //metadata
 	let itemsSorted
@@ -33,6 +35,7 @@
 	let value="";
 	let visible = false;
 	let sortOrder = ["Food and drink"]
+	let searchMode;
 
 	onMount(async () => {
 			(items = await csv(
@@ -84,23 +87,17 @@
 
 
 	let columns = []
-	$: if(w<425){
+	$: if(w<415){
 		columns=[
-			{label:"Name",prop:"Name",sort:true,type:"text"},
-		{label:"Weight or size",prop:"Weight or size",sort:true,type:"text",formatFn:(d)=> d=='null' ? '' : d},
-		{label:"Average price",prop:"Average price",sort:true,type:"number",formatFn:(d)=>'£'+format(',.2f')(d)},
-		]
-	}else if(w<500){
-		columns=[
-			{label:"Name",prop:"Name",sort:true,type:"text"},
-		{label:"Weight or size",prop:"Weight or size",sort:true,type:"text",formatFn:(d)=> d=='null' ? '' : d},
+		{label:"Name (weight or size)",prop:"Name",sort:true,type:"text"},
+		// {label:"Weight or size",prop:"Weight or size",sort:false,type:"text",formatFn:(d)=> d=='null' ? '' : d},
 		{label:"Average price",prop:"Average price",sort:true,type:"number",formatFn:(d)=>'£'+format(',.2f')(d)},
 		{label:"Annual growth",prop:"Annual growth",sort:true,type:"number",formatFn:(d)=>d==null ? 'Unavailable' : format('.1f')(d)+'%'}
 		]
 	}else{
 		columns= [
-		{label:"Name",prop:"Name",sort:true,type:"text"},
-		{label:"Weight or size",prop:"Weight or size",sort:true,type:"text",formatFn:(d)=> d=='null' ? '' : d},
+		{label:"Name (weight or size)",prop:"Name",sort:true,type:"text"},
+		// {label:"Weight or size",prop:"Weight or size",sort:false,type:"text",formatFn:(d)=> d=='null' ? '' : d},
 		{label:"Average price",prop:"Average price",sort:true,type:"number",formatFn:(d)=>'£'+format(',.2f')(d)},
 		{label:"Price last year",prop:"pricelastyear",sort:true,type:"number",formatFn:(d)=>d==null ? 'Unavailable' : '£'+format(',.2f')(d)},
 		{label:"Annual growth",prop:"Annual growth",sort:true,type:"number",formatFn:(d)=>d==null ? 'Unavailable' : format('.1f')(d)+'%'}
@@ -111,7 +108,8 @@
 	$: selectedOrdered=selected.map(d=>[...d,checkedOrder[d[0]]]).sort((a,b)=>b[2]-a[2])
 
 	$: data=selectedOrdered.map(item=>({
-		'Name':items.filter((d) => d.ITEM_ID == item[0])[0]['ITEM_DESC'],
+		'justName':items.filter((d) => d.ITEM_ID == item[0])[0]['ITEM_DESC'],
+		"Name":'<span style="font-weight:600">'+(items.filter((d) => d.ITEM_ID == item[0])[0]['ITEM_DESC'])+'</span> '+(items.filter((d) => d.ITEM_ID == item[0])[0]['WEIGHT\\SIZE'] == null ? '' : items.filter((d) => d.ITEM_ID == item[0])[0]['WEIGHT\\SIZE']),
 		'Weight or size':items.filter((d) => d.ITEM_ID == item[0])[0]['WEIGHT\\SIZE'] == null ? '' : items.filter((d) => d.ITEM_ID == item[0])[0]['WEIGHT\\SIZE'],
 		'Average price': avgprice.filter((d) => d.ITEM_ID == item[0])[0][
 							avgprice.columns[avgprice.columns.length - 1]
@@ -192,13 +190,13 @@
 	} // trick to update height on w change
 
 	$: [send, receive] = crossfade({
-		duration: (filter&&typing) ? 0 : 200,
+		duration: 200,
 
 		fallback(node, params) {
 			const style = getComputedStyle(node);
 			const transform = style.transform === 'none' ? '' : style.transform;
 			return {
-				duration: filter&&typing ? 0 : 600,
+				duration: 600,
 				easing: quintOut,
 				css: t => `
 					transform: ${transform} scale(${t});
@@ -210,7 +208,7 @@
 
 </script>
 <main>
-
+<Header/>
 <div id="top" bind:clientWidth={w}>
 	<div id='title'>
 		<h1>How is the average price of items changing over time?</h1>
@@ -220,75 +218,81 @@
 	
 
 	<div class="input">
-		<h2>Shopping items search</h2>
-		<p>Search for items from the list to add to your shopping basket.</p>
-
-		<Select on:input={oninput} --selected-item-color="#206095" --item-hover-color="#206095" --item-color="#206095" --group-title-color="#206095" --group-title-text-transform="none" --placeholder-color="#206095" --border-radius="0" --border-focused="2px solid #206095" --border-hover="2px solid #206095" --border="2px solid #206095" placeholder="Type to search for items" items={items} groupBy={(item)=>item.Category1} label="ITEM_DESC" clearable={false} id="ITEM_ID" bind:value />
-
-		<div id="searchbuttons" class='hflex'>
-			<button class="{value == '' ? "disabled" : ""}" on:click={addFromSearch(value.ITEM_ID)}>Add to basket</button>
-			{#if value}<button on:click={clearSearch}>Clear search</button>{/if}
-			{#if visible}
-			<div in:scale out:fade id='itemadded'>Item added!<img height=14 width=14 alt="" src='./tick.svg'/></div>
-			{/if}
-		</div>	
-		<hr class="white"/>
-
-		<h2>Shopping items list</h2>
-		<p>Choose items from our shopping list to add them to your basket.</p>
+		<h2>Shopping items</h2>
+		<p>Search for items from the search box or list to add to your shopping basket.</p>
+	
+		<ButtonGroup bind:selected={searchMode}/>
 	</div>
-
-	<div id='receiptheader'>
-		<svg viewBox="0 0 360 6">
-			<path d="M 0,6 L 12,0 L 24,6 L 36,0 L 48,6 L 60,0 L 72,6 L 84,0 L 96,6 L 108,0 L 120,6 L 132,0 L 144,6 L 156,0 L 168,6 L 180,0 L 192,6 L 204,0 L 216,6 L 228,0 L 240,6 L 252,0 L 264,6 L 276,0 L 288,6 L 300,0 L 312,6 L 324,0 L 336,6 L 348,0 L 360,6" fill="#F8FAFC"></path>
-		  </svg>
-	</div>
-
-	<div class="input receiptbackground">
-
-<!-- 	
-		<div>
-			<label for="filter">Filter items:</label><input id="filter" type=text bind:value={filter} on:input={input}/><button on:click={clearInput}>Clear filter</button>
-		</div> -->
+		{#if searchMode=='Browse'}
+			<div id='receiptheader'>
+				<svg viewBox="0 0 360 6">
+					<path d="M 0,6 L 12,0 L 24,6 L 36,0 L 48,6 L 60,0 L 72,6 L 84,0 L 96,6 L 108,0 L 120,6 L 132,0 L 144,6 L 156,0 L 168,6 L 180,0 L 192,6 L 204,0 L 216,6 L 228,0 L 240,6 L 252,0 L 264,6 L 276,0 L 288,6 L 300,0 L 312,6 L 324,0 L 336,6 L 348,0 L 360,6" fill="#F8FAFC"></path>
+				</svg>
+			</div>
 		
-			<div id="allitems">
-				{#if grouped}
-					{#each grouped as groups, i}
-						<details open={i==0}>
-						<summary><h2>{groups[0]}</h2>
-							<span class="ons-details__icon">
-								<svg class="ons-svg-icon" viewBox="0 0 8 13" xmlns="http://www.w3.org/2000/svg" focusable="false" fill="currentColor"><path d="M5.74,14.28l-.57-.56a.5.5,0,0,1,0-.71h0l5-5-5-5a.5.5,0,0,1,0-.71h0l.57-.56a.5.5,0,0,1,.71,0h0l5.93,5.93a.5.5,0,0,1,0,.7L6.45,14.28a.5.5,0,0,1-.71,0Z" transform="translate(-5.02 -1.59)"></path></svg>
-							</span>	
-							</summary>	
-							
-						{#each groups[1] as subgroup}
-							<h3>{subgroup[0]}</h3>
-							<div class="hflex">
-								{#each subgroup[1].filter(e=>!selected.map(e=>+e[0]).includes(e.ITEM_ID)) as item(item.ITEM_ID)}
-									<div class="item" in:receive="{{key: item.ITEM_ID}}" out:send="{{key: item.ITEM_ID}}">
-
-										<input type="checkbox" id={item.ITEM_ID} on:change={handleChange} bind:checked={isChecked[item.ITEM_ID]} />
-										<label for={item.ITEM_ID}
-											><span class="bold">{item.ITEM_DESC}</span>
-											{item['WEIGHT\\SIZE'] ? item['WEIGHT\\SIZE'] : ''}</label
-										>
-									</div>
+			<div class="input receiptbackground">
+				<div id="allitems">
+					{#if grouped}
+						{#each grouped as groups, i}
+							<details open={i==0}>
+							<summary><h2>{groups[0]}</h2>
+								<span class="ons-details__icon">
+									<svg class="ons-svg-icon" viewBox="0 0 8 13" xmlns="http://www.w3.org/2000/svg" focusable="false" fill="currentColor"><path d="M5.74,14.28l-.57-.56a.5.5,0,0,1,0-.71h0l5-5-5-5a.5.5,0,0,1,0-.71h0l.57-.56a.5.5,0,0,1,.71,0h0l5.93,5.93a.5.5,0,0,1,0,.7L6.45,14.28a.5.5,0,0,1-.71,0Z" transform="translate(-5.02 -1.59)"></path></svg>
+								</span>	
+								</summary>	
 								
-								{/each}
-							</div>
+							{#each groups[1] as subgroup}
+								<h3>{subgroup[0]}</h3>
+								<div class="hflex subgroup">
+									{#each subgroup[1].filter(e=>!selected.map(e=>+e[0]).includes(e.ITEM_ID)) as item(item.ITEM_ID)}
+										<div class="item" in:receive="{{key: item.ITEM_ID}}" out:send="{{key: item.ITEM_ID}}">
+	
+											<input type="checkbox" id={item.ITEM_ID} on:change={handleChange} bind:checked={isChecked[item.ITEM_ID]} />
+											<label for={item.ITEM_ID}
+												><span class="bold">{item.ITEM_DESC}</span>
+												<!-- {item['WEIGHT\\SIZE'] ? item['WEIGHT\\SIZE'] : ''} -->
+												</label
+											>
+										</div>
+									
+									{/each}
+								</div>
+							{/each}
+							</details>
 						{/each}
-						</details>
-					{/each}
-				{/if}
+					{/if}
+				</div>
+			</div>
+		{:else if searchMode=='Search'}
+			<div id='search'>
+				<Select --selected-item-color="#206095" --item-hover-color="#206095" --item-color="#206095" --group-title-color="#206095" --group-title-text-transform="none" --placeholder-color="#206095" --border-radius="0" --border-focused="2px solid #206095" --border-hover="2px solid #206095" --border="2px solid #206095" placeholder="Type to search for items" items={items} groupBy={(item)=>item.Category1} label="ITEM_DESC" clearable={false} id="ITEM_ID" bind:value />
+
+				<div id="searchbuttons" class='hflex'>
+					<button class="{value == '' ? "disabled" : ""}" on:click={addFromSearch(value.ITEM_ID)}>Add to basket</button>
+					{#if value}<button on:click={clearSearch}>Clear search</button>{/if}
+					{#if visible}
+					<div in:scale out:fade id='itemadded'>Item added!<img height=14 width=14 alt="" src='./tick.svg'/></div>
+					{/if}
+				</div>	
 			</div>
 
-	</div>
+	
+		{/if}
+	
 </div>
 
 <div id="results">
+	<div id="basket">
+		<img alt="" src="./basket.svg">
+	</div>
+	<div id="counter">
+		{#key selected.length}
+		<span in:receive="{{key:selected.length}}" out:send="{{key:selected.length}}">{selected.length}</span>
+		{/key}
+	</div>
 	<h2>Your basket</h2>
 	<p>
-		Average prices of items in {timeFormat("%B %Y")(lastmonth)} and the latest monthly and annual growth rate.
+		Average prices of items in {timeFormat("%B %Y")(lastmonth)} and the latest annual growth rate.
 	</p>
 
 	{#if selected.length>0}
@@ -303,7 +307,7 @@
 </div>
 {/if}
 
-<div>
+<div class='share'>
 	<h2>Use and share</h2>
 	<div class="hflex items-center gap-x-6 gap-y-0.5 lg:gap-x-8 flex-wrap ">
 		
@@ -343,15 +347,22 @@
 		background-color: #E9EFF4;
 	}
 
-	div#title, div.input{
+	div#title, div.input, div#search{
 		padding:25px;
 		padding-bottom: 0;
 		padding-top:0;
 	}
 
 	.white{
-		border:2px solid white;
+		border:0;
+		border-top:2px solid white;
+		display: block;
+		height: 2px;	
+		margin: 1em 0;
+		padding: 0;
 	}
+
+	
 
 	summary{
 		border-top: 1px solid #707071;
@@ -379,23 +390,27 @@
 	}
 
 	summary h2:hover:not(:focus){
-	text-decoration: underline solid var(--ons-color-text-link-hover) 2px;
-	color: var(--ons-color-text-link-hover);
-
+		text-decoration: underline solid var(--ons-color-text-link-hover) 2px;
+		color: var(--ons-color-text-link-hover);
 	}
 
 
 	summary:focus h2 {
-	background-color: var(--ons-color-focus);
-	-webkit-box-decoration-break: clone;
-	box-decoration-break: clone;
-	-webkit-box-shadow: 0 -2px var(--ons-color-focus),0 4px var(--ons-color-text-link-focus);
-	box-shadow: 0 -2px var(--ons-color-focus),0 4px var(--ons-color-text-link-focus);
-	color: var(--ons-color-text-link-focus);
-	outline: 3px solid transparent;
-	outline-offset: 1px;
-	text-decoration: none;
-}
+		background-color: var(--ons-color-focus);
+		-webkit-box-decoration-break: clone;
+		box-decoration-break: clone;
+		-webkit-box-shadow: 0 -2px var(--ons-color-focus),0 4px var(--ons-color-text-link-focus);
+		box-shadow: 0 -2px var(--ons-color-focus),0 4px var(--ons-color-text-link-focus);
+		color: var(--ons-color-text-link-focus);
+		outline: 3px solid transparent;
+		outline-offset: 1px;
+		text-decoration: none;
+	}
+
+	.subgroup{
+		border-bottom: 0.5px dashed #414042;
+		padding-bottom: 20px;
+	}
 
 	.ons-details__icon{
 		top: .8rem;
@@ -451,6 +466,29 @@
 		background-color: #F5F5F6;
 		margin-top: 10px;
 		padding: 25px;
+		position:relative;
+	}
+
+	#basket img{
+		width:41px;
+		position:absolute;
+		right:25px;
+		top:20px;
+	}
+
+	#counter{
+		border-radius: 50%;
+		background-color: #D0021B;
+		width:25px;
+		height:25px;
+		text-align: center;
+		color:white;
+		right:15px;
+		top:22px;
+		font-weight: 700;
+		position:absolute;
+		line-height: 25px;
+		padding-left: 1px;
 	}
 
 	div#summary{
@@ -546,6 +584,7 @@
 		line-height: 25px;
 		letter-spacing: 0em;
 		text-align: left;
+		margin-bottom:0;
 	}
 
 	.gap-y-0\.5 {
@@ -561,6 +600,10 @@
 	}
 	.flex-wrap {
 		flex-wrap: wrap;
+	}
+
+	div.share{
+		margin:20px 25px 25px 25px;
 	}
 
 	:root {

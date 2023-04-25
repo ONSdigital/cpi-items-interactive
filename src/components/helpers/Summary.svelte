@@ -21,7 +21,6 @@ let fmt=format(",.2f")
 let currency=format("$,.2f")
 
 $: if(data.length>0){
-    console.log(data.filter(d=>d['pricelastyear']>0))
     total = data.reduce((acc,cur)=>acc+cur['Average price'],0)
     totalOfItemsAvailableLastMonth=data.filter(d=>d['pricelastmonth']==null).reduce((acc,cur)=>acc+cur['Average price'],0)
     totalOfItemsAvailableLastyear=data.filter(d=>d['pricelastyear']==null).reduce((acc,cur)=>acc+cur['Average price'],0)
@@ -55,7 +54,7 @@ function lowercasefirstletter(string) {
 <!-- Check items have annual growth in them -->
 {#if maxannualgrowth['Annual growth']!=null}
 <p>
-    Over the last year, {lowercasefirstletter(maxannualgrowth['Name'])} saw the largest {maxannualgrowth['Monthly growth']>0 ? 'increase' : 'decrease'} at {format('.1f')(maxannualgrowth['Annual growth'])}%.
+    Over the last year, {lowercasefirstletter(maxannualgrowth['justName'])} saw the largest {maxannualgrowth['Monthly growth']>0 ? 'increase' : 'decrease'} at {format('.1f')(maxannualgrowth['Annual growth'])}%.
 </p>
 {/if}
 
