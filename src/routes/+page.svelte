@@ -83,13 +83,29 @@
 	});
 
 
-	let columns = [
+	let columns = []
+	$: if(w<425){
+		columns=[
+			{label:"Name",prop:"Name",sort:true,type:"text"},
+		{label:"Weight or size",prop:"Weight or size",sort:true,type:"text",formatFn:(d)=> d=='null' ? '' : d},
+		{label:"Average price",prop:"Average price",sort:true,type:"number",formatFn:(d)=>'£'+format(',.2f')(d)},
+		]
+	}else if(w<500){
+		columns=[
+			{label:"Name",prop:"Name",sort:true,type:"text"},
+		{label:"Weight or size",prop:"Weight or size",sort:true,type:"text",formatFn:(d)=> d=='null' ? '' : d},
+		{label:"Average price",prop:"Average price",sort:true,type:"number",formatFn:(d)=>'£'+format(',.2f')(d)},
+		{label:"Annual growth",prop:"Annual growth",sort:true,type:"number",formatFn:(d)=>d==null ? 'Unavailable' : format('.1f')(d)+'%'}
+		]
+	}else{
+		columns= [
 		{label:"Name",prop:"Name",sort:true,type:"text"},
 		{label:"Weight or size",prop:"Weight or size",sort:true,type:"text",formatFn:(d)=> d=='null' ? '' : d},
 		{label:"Average price",prop:"Average price",sort:true,type:"number",formatFn:(d)=>'£'+format(',.2f')(d)},
 		{label:"Price last year",prop:"pricelastyear",sort:true,type:"number",formatFn:(d)=>d==null ? 'Unavailable' : '£'+format(',.2f')(d)},
 		{label:"Annual growth",prop:"Annual growth",sort:true,type:"number",formatFn:(d)=>d==null ? 'Unavailable' : format('.1f')(d)+'%'}
 	]
+	}
 
 	$: selected = Object.entries(isChecked).filter(d=>d[1]==true);
 	$: selectedOrdered=selected.map(d=>[...d,checkedOrder[d[0]]]).sort((a,b)=>b[2]-a[2])
@@ -139,6 +155,22 @@
 
 	function clearSearch(){
 		value=""
+	}
+
+	function oninput(e){
+		document.activeElement.addEventListener('keydown',(d)=>
+		{
+			if(d.keyCode==13){addItemFromSearchEnter(e.detail.ITEM_ID)}
+		})
+		
+	}
+
+	function addItemFromSearchEnter(id){
+		isChecked[id]=true;
+		updateHeight()
+		clearSearch()
+		visible=true;
+		setTimeout(()=>visible=false,1500)
 	}
 
 	function updateHeight(event) {
@@ -191,7 +223,7 @@
 		<h2>Shopping items search</h2>
 		<p>Search for items from the list to add to your shopping basket.</p>
 
-		<Select --selected-item-color="#206095" --item-hover-color="#206095" --item-color="#206095" --group-title-color="#206095" --group-title-text-transform="none" --placeholder-color="#206095" --border-radius="0" --border-focused="2px solid #206095" --border-hover="2px solid #206095" --border="2px solid #206095" placeholder="Type to search for items" items={items} groupBy={(item)=>item.Category1} label="ITEM_DESC" clearable={false} id="ITEM_ID" bind:value />
+		<Select on:input={oninput} --selected-item-color="#206095" --item-hover-color="#206095" --item-color="#206095" --group-title-color="#206095" --group-title-text-transform="none" --placeholder-color="#206095" --border-radius="0" --border-focused="2px solid #206095" --border-hover="2px solid #206095" --border="2px solid #206095" placeholder="Type to search for items" items={items} groupBy={(item)=>item.Category1} label="ITEM_DESC" clearable={false} id="ITEM_ID" bind:value />
 
 		<div id="searchbuttons" class='hflex'>
 			<button class="{value == '' ? "disabled" : ""}" on:click={addFromSearch(value.ITEM_ID)}>Add to basket</button>
@@ -290,6 +322,9 @@
 
 </main>
 
+
+<!-- <svelte:body on:keydown={keydown}/> -->
+
 <style>
 	*{
 		box-sizing: border-box;
@@ -342,6 +377,25 @@
 		text-underline-position: under;
 		transform:translateY(-1px)
 	}
+
+	summary h2:hover:not(:focus){
+	text-decoration: underline solid var(--ons-color-text-link-hover) 2px;
+	color: var(--ons-color-text-link-hover);
+
+	}
+
+
+	summary:focus h2 {
+	background-color: var(--ons-color-focus);
+	-webkit-box-decoration-break: clone;
+	box-decoration-break: clone;
+	-webkit-box-shadow: 0 -2px var(--ons-color-focus),0 4px var(--ons-color-text-link-focus);
+	box-shadow: 0 -2px var(--ons-color-focus),0 4px var(--ons-color-text-link-focus);
+	color: var(--ons-color-text-link-focus);
+	outline: 3px solid transparent;
+	outline-offset: 1px;
+	text-decoration: none;
+}
 
 	.ons-details__icon{
 		top: .8rem;
@@ -428,6 +482,10 @@
 		width: 22px;
 		position:absolute;
 		z-index: 1;
+	}
+
+	input[type=checkbox]:focus{
+		outline: 3px solid #F39431;
 	}
 
 	.item label{

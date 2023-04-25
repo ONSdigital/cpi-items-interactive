@@ -1,5 +1,5 @@
 <script>
-	import { format } from 'd3-format';
+	import { format,formatDefaultLocale } from 'd3-format';
 
 
 export let data;
@@ -8,21 +8,31 @@ let totallastmonth
 let totallastyear
 let pricedifflastyear
 let pricedifflastmonth
+let totalOfItemsAvailableLastMonth
+let totalOfItemsAvailableLastyear
 let maxannualgrowth
+let locale=formatDefaultLocale({
+  "decimal": ".",
+  "thousands": ",",
+  "grouping": [3],
+  "currency": ["£", ""]
+})
 let fmt=format(",.2f")
+let currency=format("$,.2f")
 
 $: if(data.length>0){
+    console.log(data.filter(d=>d['pricelastyear']>0))
     total = data.reduce((acc,cur)=>acc+cur['Average price'],0)
-    totallastmonth = data.reduce((acc,cur)=>acc+cur['pricelastmonth'],0)
-    totallastyear = data.reduce((acc,cur)=>acc+cur['pricelastyear'],0)
-    pricedifflastmonth=total-totallastmonth
-    pricedifflastyear=total-totallastyear
+    totalOfItemsAvailableLastMonth=data.filter(d=>d['pricelastmonth']==null).reduce((acc,cur)=>acc+cur['Average price'],0)
+    totalOfItemsAvailableLastyear=data.filter(d=>d['pricelastyear']==null).reduce((acc,cur)=>acc+cur['Average price'],0)
+    totallastmonth = data.filter(d=>d['pricelastmonth']>0).reduce((acc,cur)=>acc+cur['pricelastmonth'],0)
+    totallastyear = data.filter(d=>d['pricelastyear']>0).reduce((acc,cur)=>acc+cur['pricelastyear'],0)
+    pricedifflastmonth=total-totalOfItemsAvailableLastMonth-totallastmonth
+    pricedifflastyear=total-totalOfItemsAvailableLastyear-totallastyear
     // https://seanconnolly.dev/javascript-find-element-with-max-value
     maxannualgrowth=data.reduce((prev,curr)=>{
         return prev['Annual growth'] > curr['Annual growth'] ? prev : curr
     })
-
-    console.log(pricedifflastyear)
 }
 
 function lowercasefirstletter(string) {
@@ -32,11 +42,11 @@ function lowercasefirstletter(string) {
 
 {#if data.length>5 && total<250}
     <p class='highlight'>
-        The total average price for all the items in your basket is £{fmt(total)}. This was £{fmt(pricedifflastmonth)} {pricedifflastmonth>0 ? 'more' :' less'} than last month.
+        The total average price for all the items in your basket is {currency(total)}. Comparing with items available, this was {currency(pricedifflastmonth)} {pricedifflastmonth>0 ? 'more' :' less'} than last month.
     </p>
 {:else}
     <p class='highlight'>
-        The total average price for all items in your basket is £{fmt(total)}. This was £{fmt(pricedifflastyear)} {pricedifflastyear>0 ? 'more' :' less'} than last year.
+        The total average price for all items in your basket is {currency(total)}. Comparing with items available, this was {currency(pricedifflastyear)} {pricedifflastyear>0 ? 'more' :' less'} than last year.
     </p>    
 {/if}
 
@@ -45,7 +55,7 @@ function lowercasefirstletter(string) {
 <!-- Check items have annual growth in them -->
 {#if maxannualgrowth['Annual growth']!=null}
 <p>
-    Over the last year, {lowercasefirstletter(maxannualgrowth['Name'])} saw the highest {maxannualgrowth['Monthly growth']>0 ? 'increase' : 'decrease'} at {format('.1f')(maxannualgrowth['Annual growth'])}%.
+    Over the last year, {lowercasefirstletter(maxannualgrowth['Name'])} saw the largest {maxannualgrowth['Monthly growth']>0 ? 'increase' : 'decrease'} at {format('.1f')(maxannualgrowth['Annual growth'])}%.
 </p>
 {/if}
 

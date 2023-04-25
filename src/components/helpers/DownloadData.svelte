@@ -1,7 +1,7 @@
 <script>
     import Icon from "./MaterialIcon.svelte";
 
-    export let dataDownloadUrl="";
+    export let dataDownloadUrl="./datadownload.xlsx";
   </script>
   
   <div class="">
