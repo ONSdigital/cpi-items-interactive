@@ -8,16 +8,61 @@
 	<meta name="viewport" content="width=device-width" />
 	<meta name="robots" content="noindex" />
 	<meta name="googlebot" content="indexifembedded" />
+	<title>Shopping price comparison tool ONS</title>
 	<meta http-equiv="content-security-policy" content="">
 		<link href="./_app/immutable/assets/_page.91ce5eac.css" rel="stylesheet">
-		<link rel="modulepreload" href="./_app/immutable/entry/start.a5503bad.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/start.a600ff43.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/index.9d6435e6.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/singletons.8cf09a33.js">
-		<link rel="modulepreload" href="./_app/immutable/entry/app.5fa84d6d.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/singletons.d0e84a0f.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/app.2b9d551d.js">
 		<link rel="modulepreload" href="./_app/immutable/entry/layout.svelte.c9136a27.js">
 		<link rel="modulepreload" href="./_app/immutable/entry/_layout.js.984db11e.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/_layout.da46b06b.js">
-		<link rel="modulepreload" href="./_app/immutable/entry/_page.svelte.ad203d83.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/_page.svelte.cced26ca.js">
+
+	<script>
+
+
+
+		function getUsageCookieValue() {
+			var cookiesPolicyCookie = document.cookie.match('(^|;) ?cookies_policy=([^;]*)(;|$)');
+			if (cookiesPolicyCookie) {
+				var decodedCookie = decodeURIComponent(cookiesPolicyCookie[2])
+				var cookieValue = JSON.parse(decodedCookie)
+				return !cookieValue.usage
+			}
+			return true
+		}
+		
+		
+		function htmlUnescape(str){
+			return str.replace(/&#x3D;/g, "=");
+		}
+		
+		dataLayer = [{
+			"analyticsOptOut": getUsageCookieValue(),
+			"gtm.whitelist": ["google","hjtc","lcl"],
+			"gtm.blacklist": ["customScripts","sp","adm","awct","k","d","j"],
+			"contentTitle": htmlUnescape("Shopping prices comparison tool"),
+			"contentType": "article",
+		}];
+		
+		</script>
+		<script>
+			  (function (w, d, s, l, i) {
+				w[l] = w[l] || [];
+				w[l].push({'gtm.start': new Date().getTime(), event: 'gtm.js'});
+				var f = d.getElementsByTagName(s)[0],
+				  j = d.createElement(s),
+				  dl = l != 'dataLayer'
+					? '&l=' + l
+					: '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore(j, f);
+			  })(window, document, 'script', 'dataLayer', 'GTM-MBCBVQS');
+		</script>
+
 </head>
 <style>
 	html {
@@ -39,6 +84,13 @@
 </style>
 
 <body data-sveltekit-preload-data="hover">
+	<noscript>
+		<iframe
+		  src="https://www.googletagmanager.com/ns.html?id=GTM-MBCBVQS"
+		  height="0"
+		  width="0"
+		  style="display:none;visibility:hidden"></iframe>
+	  </noscript>
 	<div style="display: contents">
 
 
@@ -95,7 +147,7 @@
 			
 			<script>
 				{
-					__sveltekit_17i8zn8 = {
+					__sveltekit_1wsqnvj = {
 						env: {},
 						base: new URL(".", location).pathname.slice(0, -1),
 						element: document.currentScript.parentElement
@@ -104,10 +156,10 @@
 					const data = [null,null];
 
 					Promise.all([
-						import("./_app/immutable/entry/start.a5503bad.js"),
-						import("./_app/immutable/entry/app.5fa84d6d.js")
+						import("./_app/immutable/entry/start.a600ff43.js"),
+						import("./_app/immutable/entry/app.2b9d551d.js")
 					]).then(([kit, app]) => {
-						kit.start(app, __sveltekit_17i8zn8.element, {
+						kit.start(app, __sveltekit_1wsqnvj.element, {
 							node_ids: [0, 2],
 							data,
 							form: null,

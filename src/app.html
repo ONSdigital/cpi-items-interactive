@@ -8,7 +8,52 @@
 	<meta name="viewport" content="width=device-width" />
 	<meta name="robots" content="noindex" />
 	<meta name="googlebot" content="indexifembedded" />
+	<title>Shopping price comparison tool ONS</title>
 	%sveltekit.head%
+
+	<script>
+
+
+
+		function getUsageCookieValue() {
+			var cookiesPolicyCookie = document.cookie.match('(^|;) ?cookies_policy=([^;]*)(;|$)');
+			if (cookiesPolicyCookie) {
+				var decodedCookie = decodeURIComponent(cookiesPolicyCookie[2])
+				var cookieValue = JSON.parse(decodedCookie)
+				return !cookieValue.usage
+			}
+			return true
+		}
+		
+		
+		function htmlUnescape(str){
+			return str.replace(/&#x3D;/g, "=");
+		}
+		
+		dataLayer = [{
+			"analyticsOptOut": getUsageCookieValue(),
+			"gtm.whitelist": ["google","hjtc","lcl"],
+			"gtm.blacklist": ["customScripts","sp","adm","awct","k","d","j"],
+			"contentTitle": htmlUnescape("Shopping prices comparison tool"),
+			"contentType": "article",
+		}];
+		
+		</script>
+		<script>
+			  (function (w, d, s, l, i) {
+				w[l] = w[l] || [];
+				w[l].push({'gtm.start': new Date().getTime(), event: 'gtm.js'});
+				var f = d.getElementsByTagName(s)[0],
+				  j = d.createElement(s),
+				  dl = l != 'dataLayer'
+					? '&l=' + l
+					: '';
+				j.async = true;
+				j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+				f.parentNode.insertBefore(j, f);
+			  })(window, document, 'script', 'dataLayer', 'GTM-MBCBVQS');
+		</script>
+
 </head>
 <style>
 	html {
@@ -30,6 +75,13 @@
 </style>
 
 <body data-sveltekit-preload-data="hover">
+	<noscript>
+		<iframe
+		  src="https://www.googletagmanager.com/ns.html?id=GTM-MBCBVQS"
+		  height="0"
+		  width="0"
+		  style="display:none;visibility:hidden"></iframe>
+	  </noscript>
 	<div style="display: contents">%sveltekit.body%</div>
 </body>
 
