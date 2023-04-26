@@ -8,6 +8,9 @@
     async function handleClick() {
 
       let parent = new URLSearchParams(document.location.search).get("parentUrl");
+      if(parent && parent.includes('#')) {parent=parent.split('#')[0]}
+      let child = window.location.href;
+      if(child.includes('#')){child = child.split('#')[0]}
 
       if(parent){
         if(selected){
@@ -17,9 +20,9 @@
         }
       }else{
         if(selected){
-          url = window.location+'#'+selected.map(d=>d[0]).join(',')
+          url = child+'#'+selected.map(d=>d[0]).join(',')
         }else{
-          url= window.location
+          url= child
         }
       }
       const text = "Explore how the average price of items is changing";
