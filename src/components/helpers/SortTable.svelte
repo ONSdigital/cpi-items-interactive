@@ -207,7 +207,7 @@
 	
 	th.is-sortable button:after {
 		content: url('../../../double-arrow.svg');
-		/* display: flex; */
+		display: flex;
 		position: absolute;
 		bottom: 1.2em;
 		right: 0;
@@ -215,6 +215,7 @@
 		height: 1.2em;
 		/* justify-content: center;
 		align-items: flex-end; */
+		flex-direction: column;
 		/* opacity: 0.5; */
 	}
 	th.is-sortable.is-asc button:after {
@@ -229,6 +230,7 @@
 		visibility: visible;
 		opacity: 1;
 		transform: rotate(180deg);
+		transform-origin: center;
 		height: 0.6em;
 		width:0.6em;
 	}
