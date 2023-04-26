@@ -38,35 +38,157 @@ function lowercasefirstletter(string) {
 }
 </script>
 
-{#if data.length>5 && total<250}
-    <p class='highlight'>
-        The total average price for all the items in your basket is {currency(total)}. Comparing with items available, this was {currency(pricedifflastmonth)} {pricedifflastmonth>0 ? 'more' :' less'} than last month and 
-    {currency(pricedifflastyear)} {pricedifflastyear>0 ? 'more' :' less'} than last year.
-    </p>
-{:else}
-    <p class='highlight'>
-        The total average price for all items in your basket is {currency(total)}. Comparing with items available, this was {currency(pricedifflastyear)} {pricedifflastyear>0 ? 'more' :' less'} than last year.
-    </p>    
-{/if}
+<div class='background'>
+    <div class='title'>
+        <p>Your price changes</p>
+    </div>
+    <div id='description' class='vflex dashbottom'>
+        <div class='hflex'>
+            <p class='bold s16'>Description</p>
+            <p class='bold s16'>Price</p>
+            
+        </div>
+        <div class='hflex'>
+            <p class='s21'>Basket total</p>
+            <p class='bold s21'>{currency(total)}</p>
+        </div>
+
+    </div>
+    <div id='results' class='dashbottom'>
+        <div id="pound" class='abs'>
+            <img alt="" src="./pound.svg">
+        </div>
+        <div class='abs' class:less={pricedifflastyear<0} id='arrow'>
+            <img height=14 width=14 alt="" src="./arrow.svg">
+        </div>
+        <p class='bold s16'>Results</p>
+        {#if data.length>5 && total<250}
+            <p class='s21'>
+                Comparing with items available, this was <span class='bold'>{currency(pricedifflastmonth)} {pricedifflastmonth>0 ? 'more' :' less'} than last month</span> and 
+            <span class='bold'>{currency(pricedifflastyear)} {pricedifflastyear>0 ? 'more' :' less'} than last year.</span>
+            </p>
+        {:else}
+            <p class='s21'>
+                Comparing with items available, this was <span class='bold'>{currency(pricedifflastyear)} {pricedifflastyear>0 ? 'more' :' less'} than last year.</span>
+            </p>    
+        {/if}
+    </div>
+    <div id='category'>
+        <p class='bold s16'>{maxannualgrowth['Category1']}</p>
+        <!-- Check items have annual growth in them -->
+        {#if maxannualgrowth['Annual growth']!=null}
+        <p class='s21'>
+            Over the last year, <span class='bold'>{lowercasefirstletter(maxannualgrowth['justName'])}</span> saw the largest {maxannualgrowth['Annual growth']>0 ? 'increase' : 'decrease'} at <span class='bold'>{format('.0f')(maxannualgrowth['Annual growth'])}%.</span>
+        </p>
+        {/if}
+    </div>
+    
 
 
 
-<!-- Check items have annual growth in them -->
-{#if maxannualgrowth['Annual growth']!=null}
-<p>
-    Over the last year, {lowercasefirstletter(maxannualgrowth['justName'])} saw the largest {maxannualgrowth['Annual growth']>0 ? 'increase' : 'decrease'} at {format('.0f')(maxannualgrowth['Annual growth'])}%.
-</p>
-{/if}
+    
+</div>
+<div id='receiptheader'>
+    <svg viewBox="0 0 360 6">
+        <path d="M 0,6 L 12,0 L 24,6 L 36,0 L 48,6 L 60,0 L 72,6 L 84,0 L 96,6 L 108,0 L 120,6 L 132,0 L 144,6 L 156,0 L 168,6 L 180,0 L 192,6 L 204,0 L 216,6 L 228,0 L 240,6 L 252,0 L 264,6 L 276,0 L 288,6 L 300,0 L 312,6 L 324,0 L 336,6 L 348,0 L 360,6" fill="#E9EFF4"></path>
+    </svg>
+</div>
+
+
+
+
+
+
 
 <style>
+    .hflex p{
+        margin:0;
+    }
+
+    .abs{
+        position: absolute;
+    }
+
+    #pound{
+        right:15px;
+    }
+
+    #arrow{
+        right:0;
+    }
+
+    .less{
+        transform: rotate(180deg);
+    }
+
+    #results,#category{
+        position:relative;
+    }
+
+    .dashbottom{
+        border-bottom: 1px dashed #206095;
+    }
+
+    #description{
+        padding-top: 10px;
+        padding-bottom:25px;
+    }
+
+    .hflex{
+        margin:5px 0;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .vflex{
+        display: flex;
+        flex-direction: column;
+    }
+
+    .title{
+        font-size: 24px;
+        font-weight: 700;
+        text-align: center;
+        border-width:0 0 5px 0;
+        border-style:solid;
+        border-image:url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDI3LjIuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCAxNi40IDgiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDE2LjQgODsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgoJLnN0MHtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOiMyMDYwOTU7c3Ryb2tlOiMyMDYwOTU7c3Ryb2tlLXdpZHRoOjAuNzA4NztzdHJva2UtbGluZWNhcDpyb3VuZDt9Cjwvc3R5bGU+CjxnIGlkPSJzdmdHcm91cCI+Cgk8cGF0aCB2ZWN0b3ItZWZmZWN0PSJub24tc2NhbGluZy1zdHJva2UiIGNsYXNzPSJzdDAiIGQ9Ik03LjUsMC40aDEuNEw4LjYsMy41bDMuMS0wLjlsMC4yLDEuNGwtMywwLjNsMS45LDIuNUw5LjYsNy41TDguMiw0LjcKCQlMNi45LDcuNUw1LjYsNi44bDEuOS0yLjVMNC41LDMuOWwwLjItMS40bDMsMC45TDcuNSwwLjR6Ii8+CjwvZz4KPC9zdmc+Cg==") 0 0 70 0 space;
+    }
+
+    svg{
+        transform: rotate(180deg);
+    }
+    .background{
+        background-color: #E9EFF4;
+		margin-top: 10px;
+		padding: 25px;
+    }
+
+    #category{
+        margin-bottom:-25px;
+    }
+
+    #receiptheader{
+        margin-top:-12px;
+    }
+
     p{
         color:#206095;
         font-size: 18px;
     }
 
-    p.highlight{
-        font-size: 21px;
+    .bold{
         font-weight: 700;
+    }
+
+    .s16{
+        font-size: 16px;
+        margin-top:16px;
+        margin-bottom:6px;
+    }
+
+    .s21{
+        font-size:21px;
+        margin:0 0 25px 0;
     }
 </style>
 

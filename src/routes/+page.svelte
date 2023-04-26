@@ -108,6 +108,7 @@
 	$: selectedOrdered=selected.map(d=>[...d,checkedOrder[d[0]]]).sort((a,b)=>b[2]-a[2])
 
 	$: data=selectedOrdered.map(item=>({
+		'Category1':items.filter((d)=>d.ITEM_ID==item[0])[0]['Category1'],
 		'justName':items.filter((d) => d.ITEM_ID == item[0])[0]['ITEM_DESC'],
 		"Name":'<span style="font-weight:600">'+(items.filter((d) => d.ITEM_ID == item[0])[0]['ITEM_DESC'])+'</span> '+(items.filter((d) => d.ITEM_ID == item[0])[0]['WEIGHT\\SIZE'] == null ? '' : items.filter((d) => d.ITEM_ID == item[0])[0]['WEIGHT\\SIZE']),
 		'Weight or size':items.filter((d) => d.ITEM_ID == item[0])[0]['WEIGHT\\SIZE'] == null ? '' : items.filter((d) => d.ITEM_ID == item[0])[0]['WEIGHT\\SIZE'],
@@ -302,9 +303,7 @@
 </div>
 
 {#if data.length>0}
-<div id="summary">
-	<Summary {data}/>
-</div>
+<Summary {data}/>
 {/if}
 
 <div class='share'>
@@ -489,12 +488,6 @@
 		position:absolute;
 		line-height: 25px;
 		padding-left: 1px;
-	}
-
-	div#summary{
-		background-color: #E9EFF4;
-		margin-top: 10px;
-		padding: 25px;
 	}
 
 	.item{
