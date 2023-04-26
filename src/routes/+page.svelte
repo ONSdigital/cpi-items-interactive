@@ -522,8 +522,17 @@
 		z-index: 1;
 	}
 
+	input[type=checkbox]:hover{
+		background:url("./checkbox-hover.svg") no-repeat center;
+		height: 22px;
+		width: 22px;
+	}
+
 	input[type=checkbox]:focus{
 		outline: 3px solid #F39431;
+		background:url("./checkbox-hover.svg") no-repeat center;
+		height: 22px;
+		width: 22px;
 	}
 
 	.item label{

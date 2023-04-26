@@ -32,9 +32,13 @@
     
     const sortFn = {
 		asc: (a, b) =>
-			a == null || b == null ? NaN : a < b ? -1 : a > b ? 1 : a >= b ? 0 : NaN,
+			// a == null || b == null ? NaN : a < b ? -1 : a > b ? 1 : a >= b ? 0 : NaN,
+			a == 'Unavailable' || b == 'Unavailable' ? NaN : a < b ? -1 : a > b ? 1 : a >= b ? 0 : NaN,
+
 		desc: (a, b) =>
-			a == null || b == null ? NaN : b < a ? -1 : b > a ? 1 : b >= a ? 0 : NaN
+			// a == null || b == null ? NaN : b < a ? -1 : b > a ? 1 : b >= a ? 0 : NaN
+			a == 'Unavailable' || b == 'Unavailable' ? NaN : b < a ? -1 : b > a ? 1 : b >= a ? 0 : NaN
+
 	};
 	const onSort = ({ prop, i, same }) => {
 		const dir = th[i].dir;
@@ -203,14 +207,14 @@
 	
 	th.is-sortable button:after {
 		content: url('../../../double-arrow.svg');
-		display: flex;
+		/* display: flex; */
 		position: absolute;
 		bottom: 1.2em;
 		right: 0;
 		width: 1.2em;
 		height: 1.2em;
-		justify-content: center;
-		align-items: flex-end;
+		/* justify-content: center;
+		align-items: flex-end; */
 		/* opacity: 0.5; */
 	}
 	th.is-sortable.is-asc button:after {
