@@ -62,7 +62,7 @@
 			grouped = groups(itemsSorted,d=>d.Category1,d=>d.Category2)
 
 
-			lastmonth=timeParse("%Y-%m-%d")(monthlygrowth.columns[monthlygrowth.columns.length-1])
+			lastmonth=timeParse("%Y-%m-%d %H:%M:%S")(monthlygrowth.columns[monthlygrowth.columns.length-1])
 
 			pymChild = new pym.Child
 
