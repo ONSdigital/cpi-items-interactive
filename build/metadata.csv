@@ -87,8 +87,8 @@
 510533,201102,Clothing and footwear,Footwear including repairs,Footwear including repairs,Footwear for women,Clothing and footwear,Women's footwear,Women's high heeled shoes,,44.910
 310207,199702,Alcoholic beverages and tobacco,Alcoholic beverages,Beer,Other alcoholic beer,Food and drink,Alcohol,Bitter,4 cans (440-500ml),4.389
 310215,200402,Alcoholic beverages and tobacco,Alcoholic beverages,Beer,Lager beer,Food and drink,Alcohol,Premium lager ,4 bottles ,5.564
-310216,200402,Alcoholic beverages and tobacco,Alcoholic beverages,Beer,Lager beer,Food and drink,Alcohol,Lager ,10-24 cans (440-500ml),12.267
-310217,200802,Alcoholic beverages and tobacco,Alcoholic beverages,Beer,Lager beer,Food and drink,Alcohol,Lager ,10-24 bottles (250-330ml),13.408
+310216,200402,Alcoholic beverages and tobacco,Alcoholic beverages,Beer,Lager beer,Food and drink,Alcohol,Cans of lager ,10-24 cans (440-500ml),12.267
+310217,200802,Alcoholic beverages and tobacco,Alcoholic beverages,Beer,Lager beer,Food and drink,Alcohol,Bottles of lager,10-24 bottles (250-330ml),13.408
 310219,201202,Alcoholic beverages and tobacco,Alcoholic beverages,Beer,Other alcoholic beer,Food and drink,Alcohol,Stout,4 can pack,5.121
 310220,201502,Alcoholic beverages and tobacco,Alcoholic beverages,Beer,Other alcoholic beer,Food and drink,Alcohol,Speciality bottled beer (4.5-5%),500ml,1.891
 310222,201702,Alcoholic beverages and tobacco,Alcoholic beverages,Wine,Wine from other fruits,Food and drink,Alcohol,Flavoured cider bottled ,500-568ml,2.259
@@ -299,7 +299,7 @@
 220128,201602,Restaurants and hotels,Catering services,"Restaurants, cafes",Restaurants; cafes and dancing establishments,Food and drink establishments,"Pubs, restaurants and cafes",Restaurant main course,,14.206
 220208,200002,Restaurants and hotels,Catering services,Canteens,Canteens,Food and drink establishments,"Pubs, restaurants and cafes",Staff restaurant hot snack item,,2.347
 220214,201402,Restaurants and hotels,Catering services,Canteens,Canteens,Food and drink establishments,"Pubs, restaurants and cafes",Staff restaurant main course,,4.187
-220310,198702,Restaurants and hotels,Catering services,"Restaurants, cafes",Restaurants; cafes and dancing establishments,Food and drink establishments,"Pubs, restaurants and cafes",Crisps,per pack,1.110
+220310,198702,Restaurants and hotels,Catering services,"Restaurants, cafes",Restaurants; cafes and dancing establishments,Food and drink establishments,"Pubs, restaurants and cafes",Crisps (eating out),per pack,1.110
 220209,200302,Restaurants and hotels,Catering services,Canteens,Canteens,Food and drink establishments,Schools,Primary school meal (fixed charges),,2.385
 220210,200302,Restaurants and hotels,Catering services,Canteens,Canteens,Food and drink establishments,Schools,Secondary school (cafeteria),,2.515
 520219,198802,Miscellaneous goods and services,Personal care,Appliances and products for personal care,Articles for personal hygiene and wellness,Health,Babies,Disposable nappies,pack of 20-60,6.222
@@ -308,7 +308,7 @@
 520139,201302,Health,"Medical products, appliances and equipment",Other medical and therapeutic equipment,Corrective eye-glasses and contact lenses,Health,Glasses and contact lenses,Daily disposable soft lenses,pack of 30 pairs,30.699
 520202,198702,Health,"Medical products, appliances and equipment",Pharmaceutical products,Pharmaceutical products,Health,Personal health,Indigestion tablets,pack of 16-24,3.750
 520222,199202,Health,"Medical products, appliances and equipment",Pharmaceutical products,Pharmaceutical products,Health,Personal health,Multi-vitamin tablets,per pack,5.299
-520227,199702,Health,"Medical products, appliances and equipment",Pharmaceutical products,Pharmaceutical products,Health,Personal health,Pain killer tablets,pack of 16-24,2.019
+520227,199702,Health,"Medical products, appliances and equipment",Pharmaceutical products,Pharmaceutical products,Health,Personal health,Painkiller tablets,pack of 16-24,2.019
 520228,199702,Health,"Medical products, appliances and equipment",Other medical and therapeutic equipment,Other medical products nec,Health,Personal health,Plasters,pack of 20-40,2.021
 520230,199902,Health,"Medical products, appliances and equipment",Other medical and therapeutic equipment,Pregnancy test and mechanical contraceptive devices,Health,Personal health,Condoms,pack of 3-14,8.706
 520235,200102,Miscellaneous goods and services,Personal care,Appliances and products for personal care,Articles for personal hygiene and wellness,Health,Personal health,Sunscreen,15 SPF,6.730
@@ -342,7 +342,7 @@
 430509,198702,"Furniture, household equipment and maintenance",Goods and services for routine maintenance,Non-durable household goods,Cleaning and maintenance products,Household items,Cleaning,Household cleaner liquid,450-500ml,1.237
 430529,200302,"Furniture, household equipment and maintenance",Goods and services for routine maintenance,Non-durable household goods,Cleaning and maintenance products,Household items,Cleaning,Bleach,750ml,0.979
 430533,200402,"Furniture, household equipment and maintenance",Goods and services for routine maintenance,Non-durable household goods,Other non-durable small household articles,Household items,Cleaning,Kitchen roll,pack of 2-4,3.003
-430540,201902,"Furniture, household equipment and maintenance",Goods and services for routine maintenance,Non-durable household goods,Cleaning and maintenance products,Household items,Cleaning,Washing up liquid,800ml-1.5litre,5.678
+430540,201902,"Furniture, household equipment and maintenance",Goods and services for routine maintenance,Non-durable household goods,Cleaning and maintenance products,Household items,Cleaning,Washing liquid,800ml-1.5litre,5.678
 430542,202202,"Furniture, household equipment and maintenance",Goods and services for routine maintenance,Non-durable household goods,Cleaning and maintenance products,Household items,Cleaning,Antibacterial surface wipes,per pack,2.261
 430543,202202,"Furniture, household equipment and maintenance",Goods and services for routine maintenance,Non-durable household goods,Other non-durable small household articles,Household items,Cleaning,Bin liners for kitchen use,per pack,2.639
 430507,198702,"Furniture, household equipment and maintenance",Goods and services for routine maintenance,Non-durable household goods,Cleaning and maintenance products,Household items,Cleaning,Washing up liquid,380-900ml,1.088
