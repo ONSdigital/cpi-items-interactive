@@ -92,7 +92,7 @@
 		{label:"Name (weight or size)",prop:"Name",sort:true,type:"text"},
 		// {label:"Weight or size",prop:"Weight or size",sort:false,type:"text",formatFn:(d)=> d=='null' ? '' : d},
 		{label:"Average price",prop:"Average price",sort:true,type:"number",formatFn:(d)=>'£'+format(',.2f')(d)},
-		{label:"Annual growth",prop:"Annual growth",sort:true,type:"number",formatFn:(d)=>d==null ? 'Unavailable' : format('.1f')(d)+'%'}
+		{label:"Annual growth",prop:"Annual growth",sort:true,type:"number",formatFn:(d)=>d==null ? 'Unavailable' : format('.0f')(d)+'%'}
 		]
 	}else{
 		columns= [
@@ -100,7 +100,7 @@
 		// {label:"Weight or size",prop:"Weight or size",sort:false,type:"text",formatFn:(d)=> d=='null' ? '' : d},
 		{label:"Average price",prop:"Average price",sort:true,type:"number",formatFn:(d)=>'£'+format(',.2f')(d)},
 		{label:"Price last year",prop:"pricelastyear",sort:true,type:"number",formatFn:(d)=>d==null ? 'Unavailable' : '£'+format(',.2f')(d)},
-		{label:"Annual growth",prop:"Annual growth",sort:true,type:"number",formatFn:(d)=>d==null ? 'Unavailable' : format('.1f')(d)+'%'}
+		{label:"Annual growth",prop:"Annual growth",sort:true,type:"number",formatFn:(d)=>d==null ? 'Unavailable' : format('.0f')(d)+'%'}
 	]
 	}
 
