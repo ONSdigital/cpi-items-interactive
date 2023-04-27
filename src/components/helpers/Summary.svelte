@@ -40,7 +40,7 @@ function lowercasefirstletter(string) {
 
 <div class='background'>
     <div class='title'>
-        <p>Your price changes</p>
+        <h2>Your price changes</h2>
     </div>
     <div id='description' class='vflex dashbottom'>
         <div class='hflex'>
@@ -55,32 +55,52 @@ function lowercasefirstletter(string) {
 
     </div>
     <div id='results' class='dashbottom'>
-        <div id="pound" class='abs'>
-            <img alt="" src="./pound.svg">
-        </div>
-        <div class='abs' class:less={pricedifflastyear<0} id='arrow'>
-            <img height=14 width=14 alt="" src="./arrow.svg">
-        </div>
         <p class='bold s16'>Results</p>
-        {#if data.length>5 && total<250}
-            <p class='s21'>
-                Comparing with items available, this was <span class='bold'>{currency(pricedifflastmonth)} {pricedifflastmonth>0 ? 'more' :' less'} than last month</span> and 
-            <span class='bold'>{currency(pricedifflastyear)} {pricedifflastyear>0 ? 'more' :' less'} than last year.</span>
-            </p>
-        {:else}
-            <p class='s21'>
-                Comparing with items available, this was <span class='bold'>{currency(pricedifflastyear)} {pricedifflastyear>0 ? 'more' :' less'} than last year.</span>
-            </p>    
-        {/if}
+        <div class='hflex'>
+            <div class='first-item'>
+                {#if data.length>5 && total<250}
+                    <p class='s21'>
+                        Comparing with items available, this was <span class='bold'>{currency(pricedifflastmonth)} {pricedifflastmonth>0 ? 'more' :' less'} than last month</span> and 
+                    <span class='bold'>{currency(pricedifflastyear)} {pricedifflastyear>0 ? 'more' :' less'} than last year.</span>
+                    </p>
+                {:else}
+                    <p class='s21'>
+                        Comparing with items available, this was <span class='bold'>{currency(pricedifflastyear)} {pricedifflastyear>0 ? 'more' :' less'} than last year.</span>
+                    </p>    
+                {/if}
+            </div>
+                
+            <div class='rel last-item'>
+                <div id="pound" class='abs'>
+                    <img alt="" src="./pound.svg">
+                </div>
+                <div class='abs' class:less={pricedifflastyear<0} id='arrow'>
+                    <img height=14 width=14 alt="" src="./arrow.svg">
+                </div>
+            </div>
+        </div>
+        
+        
+        
+        
     </div>
     <div id='category'>
         <p class='bold s16'>{maxannualgrowth['Category1']}</p>
-        <!-- Check items have annual growth in them -->
-        {#if maxannualgrowth['Annual growth']!=null}
-        <p class='s21'>
-            Over the last year, <span class='bold'>{lowercasefirstletter(maxannualgrowth['justName'])}</span> saw the largest {maxannualgrowth['Annual growth']>0 ? 'increase' : 'decrease'} at <span class='bold'>{format('.0f')(maxannualgrowth['Annual growth'])}%.</span>
-        </p>
-        {/if}
+        <div class='hflex'>
+            <div class='first-item'>
+                <!-- Check items have annual growth in them -->
+                {#if maxannualgrowth['Annual growth']!=null}
+                <p class='s21'>
+                    Over the last year, <span class='bold'>{lowercasefirstletter(maxannualgrowth['justName'])}</span> saw the largest {maxannualgrowth['Annual growth']>0 ? 'increase' : 'decrease'} at <span class='bold'>{format('.0f')(maxannualgrowth['Annual growth'])}%.</span>
+                </p>
+                {/if}
+            </div>
+            <div class=last-item>
+                <img class="{maxannualgrowth['Category1'].replace(/\s/g, '').toLowerCase()} icon" alt=''/>
+            </div>
+        </div>
+        
+        
     </div>
     
 
@@ -101,6 +121,54 @@ function lowercasefirstletter(string) {
 
 
 <style>
+
+    img.icon{
+        width:40px;
+        height:40px;
+        float:right;
+    }
+
+    .foodanddrink{
+        content:url("./basket.svg");
+    }
+
+    .clothingandfootwear{
+        content:url("./clothing.svg");
+    }
+
+    /* .foodanddrinkestablishments{
+        content:url("./basket.svg");
+    } */
+
+    .health{
+        content:url("./health.svg");
+    }
+
+    .householditems{
+        content:url("./household.svg");
+    }
+
+    .recreationandculture{
+        content:url("./recreation.svg");
+    }
+
+    /* .services{
+        content:url("./basket.svg");
+    } */
+
+    .transport{
+        content:url("./transport.svg");
+    }
+
+    
+    .first-item{
+        flex:1 1 auto;
+    }
+
+    .last-item{
+        flex:0 0 50px;
+    }
+
     .hflex p{
         margin:0;
     }
@@ -140,15 +208,19 @@ function lowercasefirstletter(string) {
         justify-content: space-between;
     }
 
+    #results .hflex{
+        padding-bottom: 25px;
+    }
+
     .vflex{
         display: flex;
         flex-direction: column;
     }
 
     .title{
-        font-size: 24px;
+        font-size: 16px;
         font-weight: 700;
-        text-align: center;
+        /* text-align: center; */
         border-width:0 0 5px 0;
         border-style:solid;
         border-image:url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDI3LjIuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCAxNi40IDgiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDE2LjQgODsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgoJLnN0MHtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOiMyMDYwOTU7c3Ryb2tlOiMyMDYwOTU7c3Ryb2tlLXdpZHRoOjAuNzA4NztzdHJva2UtbGluZWNhcDpyb3VuZDt9Cjwvc3R5bGU+CjxnIGlkPSJzdmdHcm91cCI+Cgk8cGF0aCB2ZWN0b3ItZWZmZWN0PSJub24tc2NhbGluZy1zdHJva2UiIGNsYXNzPSJzdDAiIGQ9Ik03LjUsMC40aDEuNEw4LjYsMy41bDMuMS0wLjlsMC4yLDEuNGwtMywwLjNsMS45LDIuNUw5LjYsNy41TDguMiw0LjcKCQlMNi45LDcuNUw1LjYsNi44bDEuOS0yLjVMNC41LDMuOWwwLjItMS40bDMsMC45TDcuNSwwLjR6Ii8+CjwvZz4KPC9zdmc+Cg==") 0 0 70 0 space;
@@ -163,12 +235,14 @@ function lowercasefirstletter(string) {
 		padding: 25px;
     }
 
-    #category{
-        margin-bottom:-25px;
+    #receiptheader{
+        height:14px;
+        overflow: hidden;
+        position:relative;
     }
 
-    #receiptheader{
-        margin-top:-12px;
+    #receiptheader svg{
+        position:absolute;
     }
 
     p{
@@ -180,6 +254,10 @@ function lowercasefirstletter(string) {
         font-weight: 700;
     }
 
+    .rel{
+        position:relative
+    }
+
     .s16{
         font-size: 16px;
         margin-top:16px;
@@ -189,6 +267,10 @@ function lowercasefirstletter(string) {
     .s21{
         font-size:21px;
         margin:0 0 25px 0;
+    }
+
+    h2{
+        color:#206095;
     }
 </style>
 

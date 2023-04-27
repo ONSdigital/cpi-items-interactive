@@ -266,7 +266,11 @@
 			</div>
 		{:else if searchMode=='Search'}
 			<div id='search'>
-				<Select --selected-item-color="#206095" --item-hover-color="#206095" --item-color="#206095" --group-title-color="#206095" --group-title-text-transform="none" --placeholder-color="#206095" --border-radius="0" --border-focused="2px solid #206095" --border-hover="2px solid #206095" --border="2px solid #206095" placeholder="Type to search for items" items={items} groupBy={(item)=>item.Category1} label="ITEM_DESC" clearable={false} id="ITEM_ID" bind:value />
+				<Select --selected-item-color="#206095" --item-hover-color="#206095" --item-color="#206095" --group-title-color="#206095" --group-title-text-transform="none" --placeholder-color="#206095" --border-radius="0" --border-focused="2px solid #206095" --border-hover="2px solid #206095" --border="2px solid #206095" placeholder="Type to search for items" items={items} groupBy={(item)=>item.Category1} label="ITEM_DESC" clearable={false} id="ITEM_ID" bind:value>
+					<div style="padding:10px;color:#206095;" slot='empty'>
+						No items found
+					</div>
+				</Select>
 
 				<div id="searchbuttons" class='hflex'>
 					<button class="{value == '' ? "disabled" : ""}" on:click={addFromSearch(value.ITEM_ID)}>Add to basket</button>
