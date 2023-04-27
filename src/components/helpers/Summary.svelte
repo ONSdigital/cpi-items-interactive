@@ -129,11 +129,11 @@ function lowercasefirstletter(string) {
     }
 
     .foodanddrink{
-        content:url("./basket.svg");
+        content:url("../../../basket.svg");
     }
 
     .clothingandfootwear{
-        content:url("./clothing.svg");
+        content:url("../../../clothing.svg");
     }
 
     /* .foodanddrinkestablishments{
@@ -141,15 +141,15 @@ function lowercasefirstletter(string) {
     } */
 
     .health{
-        content:url("./health.svg");
+        content:url("../../../health.svg");
     }
 
     .householditems{
-        content:url("./household.svg");
+        content:url("../../../household.svg");
     }
 
     .recreationandculture{
-        content:url("./recreation.svg");
+        content:url("../../../recreation.svg");
     }
 
     /* .services{
@@ -157,7 +157,7 @@ function lowercasefirstletter(string) {
     } */
 
     .transport{
-        content:url("./transport.svg");
+        content:url("../../../transport.svg");
     }
 
     
