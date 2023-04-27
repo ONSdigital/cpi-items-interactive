@@ -136,9 +136,9 @@ function lowercasefirstletter(string) {
         content:url("../../../clothing.svg");
     }
 
-    /* .foodanddrinkestablishments{
-        content:url("./basket.svg");
-    } */
+    .foodanddrinkestablishments{
+        content:url("../../../foodestablishments.svg");
+    }
 
     .health{
         content:url("../../../health.svg");
@@ -152,9 +152,9 @@ function lowercasefirstletter(string) {
         content:url("../../../recreation.svg");
     }
 
-    /* .services{
-        content:url("./basket.svg");
-    } */
+    .services{
+        content:url("../../../services.svg");
+    }
 
     .transport{
         content:url("../../../transport.svg");
