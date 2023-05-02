@@ -70,18 +70,19 @@
 			let checkitems = new RegExp('[0-9]{6}')
 			let parent = new URLSearchParams(document.location.search).get("parentUrl");
 			let child = window.location.href.includes('#')
+
 			let childpage = window.location.href
-			let childcode = child ? childpage.split("#")[1].split(',').map(d=>+d) : null
-			let parentcode = parent ? parent.split("#")[1].split(',').map(d=>+d) : null;
-			
+			console.log(parent,child, childpage)
+			let childcode = child ? childpage.split("#")[1].split(',').map(d=>+d) : null;
+			let parentcode = parent.includes('#') ? parent.split("#")[1].split(',').map(d=>+d) : null;
+
 			if (parentcode && parentcode.every(d=>checkitems.test(d))){
 				parentcode.forEach(d=>isChecked[d]=true)
-				
 			}
-			if (childcode && childcode.every(d=>checkitems.test(d))){
+
+			if (childcode && childcode.every(d=>checkitems.test(d)) && !parent.includes("#")){
 				childcode.forEach(d=>isChecked[d]=true)
-				
-			}
+			}	
 
 	});
 

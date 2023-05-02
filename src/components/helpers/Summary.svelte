@@ -22,7 +22,6 @@ let percentage=format('.0f')
 let perchangeofbasket
 
 $: if(data.length>0){
-    console.log(data)
     total = data.reduce((acc,cur)=>acc+cur['Average price'],0)
     totalOfItemsAvailableLastMonth=data.filter(d=>d['pricelastmonth']==null).reduce((acc,cur)=>acc+cur['Average price'],0)
     totalOfItemsAvailableLastyear=data.filter(d=>d['pricelastyear']==null).reduce((acc,cur)=>acc+cur['Average price'],0)
