@@ -102,7 +102,7 @@ function lowercasefirstletter(string) {
                     <!-- Check items have annual growth in them -->
                     {#if maxannualgrowth['Annual growth']!=null}
                     <p class='s21'>
-                        Over the last year, <span class='bold'>{lowercasefirstletter(maxannualgrowth['justName'])}</span> saw the largest {maxannualgrowth['Annual growth']>0 ? 'increase' : 'decrease'} at <span class='bold'>{percentage(maxannualgrowth['Annual growth'])}%.</span>
+                        Over the last year, <span class='bold'>{lowercasefirstletter(maxannualgrowth['justName'])}</span> saw the largest {maxannualgrowth['Annual growth']>0 ? 'increase' : 'decrease'} at <span class='bold'>{percentage(Math.abs(maxannualgrowth['Annual growth']))}%.</span>
                     </p>
                     {/if}
                 </div>
