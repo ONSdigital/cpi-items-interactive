@@ -1,7 +1,7 @@
 <script>
     import Icon from "./MaterialIcon.svelte";
   
-    export let selected = []
+    export let selectedOrdered = []
     let url
     let complete = false;
   
@@ -13,14 +13,14 @@
       if(child.includes('#')){child = child.split('#')[0]}
 
       if(parent){
-        if(selected){
-          url = parent+'#'+selected.map(d=>d[0]).join(',')
+        if(selectedOrdered){
+          url = parent+'#'+selectedOrdered.map(d=>d[0]).join(',')
         }else{
           url = parent
         }
       }else{
-        if(selected){
-          url = child+'#'+selected.map(d=>d[0]).join(',')
+        if(selectedOrdered){
+          url = child+'#'+selectedOrdered.map(d=>d[0]).join(',')
         }else{
           url= child
         }

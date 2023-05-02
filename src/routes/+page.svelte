@@ -72,15 +72,14 @@
 			let child = window.location.href.includes('#')
 
 			let childpage = window.location.href
-			console.log(parent,child, childpage)
 			let childcode = child ? childpage.split("#")[1].split(',').map(d=>+d) : null;
-			let parentcode = parent.includes('#') ? parent.split("#")[1].split(',').map(d=>+d) : null;
+			let parentcode = parent ? parent.includes('#') ? parent.split("#")[1].split(',').map(d=>+d) : null : null;
 
 			if (parentcode && parentcode.every(d=>checkitems.test(d))){
 				parentcode.forEach(d=>isChecked[d]=true)
 			}
 
-			if (childcode && childcode.every(d=>checkitems.test(d)) && !parent.includes("#")){
+			if (childcode && childcode.every(d=>checkitems.test(d))){
 				childcode.forEach(d=>isChecked[d]=true)
 			}	
 
@@ -315,7 +314,7 @@
 	<h2>Use and share</h2>
 	<div class="hflex items-center gap-x-6 gap-y-0.5 lg:gap-x-8 flex-wrap ">
 		
-		<Share {selected} />
+		<Share {selectedOrdered} />
 		
 
 		<Feedback/>
