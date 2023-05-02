@@ -13,7 +13,7 @@
         <div class="text-2xl text-ons-black">
           <Icon kind="fileDownload" />
         </div>
-        <div>Download data</div>
+        <div>Download all data</div>
       </a>
   </div>
   

@@ -18,8 +18,11 @@ let locale=formatDefaultLocale({
   "currency": ["£", ""]
 })
 let currency=format("$,.2f")
+let percentage=format('.0f')
+let perchangeofbasket
 
 $: if(data.length>0){
+    console.log(data)
     total = data.reduce((acc,cur)=>acc+cur['Average price'],0)
     totalOfItemsAvailableLastMonth=data.filter(d=>d['pricelastmonth']==null).reduce((acc,cur)=>acc+cur['Average price'],0)
     totalOfItemsAvailableLastyear=data.filter(d=>d['pricelastyear']==null).reduce((acc,cur)=>acc+cur['Average price'],0)
@@ -31,6 +34,7 @@ $: if(data.length>0){
     maxannualgrowth=data.reduce((prev,curr)=>{
         return prev['Annual growth'] > curr['Annual growth'] ? prev : curr
     })
+    perchangeofbasket=100*pricedifflastyear/totallastyear
 }
 
 function lowercasefirstletter(string) {
@@ -54,18 +58,25 @@ function lowercasefirstletter(string) {
         </div>
 
     </div>
-    <div id='results' class='dashbottom'>
+    <div id='results' class=''>
         <p class='bold s16'>Results</p>
         <div class='hflex'>
             <div class='first-item'>
                 {#if data.length>5 && total<250}
                     <p class='s21'>
                         Comparing with items available, this was <span class='bold'>{currency(pricedifflastmonth)} {pricedifflastmonth>0 ? 'more' :' less'} than last month</span> and 
-                    <span class='bold'>{currency(pricedifflastyear)} {pricedifflastyear>0 ? 'more' :' less'} than last year.</span>
+                    <span class='bold'>{currency(pricedifflastyear)} {pricedifflastyear>0 ? 'more' :' less'} than last year.</span> This was an annual <span class='bold'>{pricedifflastyear>0 ? 'increase' :' decrease'} of {percentage(100*pricedifflastyear/totallastyear)}%.</span>
                     </p>
-                {:else}
+                {:else if data.length==1}
                     <p class='s21'>
                         Comparing with items available, this was <span class='bold'>{currency(pricedifflastyear)} {pricedifflastyear>0 ? 'more' :' less'} than last year.</span>
+                        {#if data[0]['Annual growth']!=null}
+                            This was {data[0]['Annual growth']>0 ? 'an' :' a'} <span class='bold'>{data[0]['Annual growth']>0 ? 'increase' :' decrease'} of {percentage(data[0]['Annual growth'])}%.</span>
+                        {/if}
+                    </p>    
+                {:else}
+                    <p class='s21'>
+                        Comparing with items available, this was <span class='bold'>{currency(pricedifflastyear)} {pricedifflastyear>0 ? 'more' :' less'} than last year.</span> This was {pricedifflastyear>0 ? 'an' :' a'} <span class='bold'>{pricedifflastyear>0 ? 'increase' :' decrease'} of {percentage(100*pricedifflastyear/totallastyear)}%.</span>
                     </p>    
                 {/if}
             </div>
@@ -84,24 +95,26 @@ function lowercasefirstletter(string) {
         
         
     </div>
-    <div id='category'>
-        <p class='bold s16'>{maxannualgrowth['Category1']}</p>
-        <div class='hflex'>
-            <div class='first-item'>
-                <!-- Check items have annual growth in them -->
-                {#if maxannualgrowth['Annual growth']!=null}
-                <p class='s21'>
-                    Over the last year, <span class='bold'>{lowercasefirstletter(maxannualgrowth['justName'])}</span> saw the largest {maxannualgrowth['Annual growth']>0 ? 'increase' : 'decrease'} at <span class='bold'>{format('.0f')(maxannualgrowth['Annual growth'])}%.</span>
-                </p>
-                {/if}
+    {#if maxannualgrowth['Annual growth']!=null}
+        <div id='category' class='dashtop'>
+            <p class='bold s16'>{maxannualgrowth['Category1']}</p>
+            <div class='hflex'>
+                <div class='first-item'>
+                    <!-- Check items have annual growth in them -->
+                    {#if maxannualgrowth['Annual growth']!=null}
+                    <p class='s21'>
+                        Over the last year, <span class='bold'>{lowercasefirstletter(maxannualgrowth['justName'])}</span> saw the largest {maxannualgrowth['Annual growth']>0 ? 'increase' : 'decrease'} at <span class='bold'>{percentage(maxannualgrowth['Annual growth'])}%.</span>
+                    </p>
+                    {/if}
+                </div>
+                <div class=last-item>
+                    <img class="{maxannualgrowth['Category1'].replace(/\s/g, '').toLowerCase()} icon" alt=''/>
+                </div>
             </div>
-            <div class=last-item>
-                <img class="{maxannualgrowth['Category1'].replace(/\s/g, '').toLowerCase()} icon" alt=''/>
-            </div>
+            
+            
         </div>
-        
-        
-    </div>
+    {/if}
     
 
 
@@ -195,6 +208,10 @@ function lowercasefirstletter(string) {
 
     .dashbottom{
         border-bottom: 1px dashed #206095;
+    }
+
+    .dashtop{
+        border-top:1px dashed #206095;
     }
 
     #description{
