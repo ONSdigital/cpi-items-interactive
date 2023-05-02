@@ -63,19 +63,19 @@ function lowercasefirstletter(string) {
             <div class='first-item'>
                 {#if data.length>5 && total<250}
                     <p class='s21'>
-                        Comparing with items available, this was <span class='bold'>{currency(pricedifflastmonth)} {pricedifflastmonth>0 ? 'more' :' less'} than last month</span> and 
-                    <span class='bold'>{currency(pricedifflastyear)} {pricedifflastyear>0 ? 'more' :' less'} than last year.</span> This was an annual <span class='bold'>{pricedifflastyear>0 ? 'increase' :' decrease'} of {percentage(Math.abs(100*pricedifflastyear/totallastyear))}%.</span>
+                        Comparing with items available, this was <span class='bold'>{currency(Math.abs(pricedifflastmonth))} {pricedifflastmonth>0 ? 'more' :' less'} than last month</span> and 
+                    <span class='bold'>{currency(Math.abs(pricedifflastyear))} {pricedifflastyear>0 ? 'more' :' less'} than last year.</span> This was an annual <span class='bold'>{pricedifflastyear>0 ? 'increase' :' decrease'} of {percentage(Math.abs(100*pricedifflastyear/totallastyear))}%.</span>
                     </p>
                 {:else if data.length==1}
                     <p class='s21'>
-                        Comparing with items available, this was <span class='bold'>{currency(pricedifflastyear)} {pricedifflastyear>0 ? 'more' :' less'} than last year.</span>
+                        Comparing with items available, this was <span class='bold'>{currency(Math.abs(pricedifflastyear))} {pricedifflastyear>0 ? 'more' :' less'} than last year.</span>
                         {#if data[0]['Annual growth']!=null}
                             This was {data[0]['Annual growth']>0 ? 'an' :' a'} <span class='bold'>{data[0]['Annual growth']>0 ? 'increase' :' decrease'} of {percentage(Math.abs(data[0]['Annual growth']))}%.</span>
                         {/if}
                     </p>    
                 {:else}
                     <p class='s21'>
-                        Comparing with items available, this was <span class='bold'>{currency(pricedifflastyear)} {pricedifflastyear>0 ? 'more' :' less'} than last year.</span> This was {pricedifflastyear>0 ? 'an' :' a'} <span class='bold'>{pricedifflastyear>0 ? 'increase' :' decrease'} of {percentage(Math.abs(100*pricedifflastyear/totallastyear))}%.</span>
+                        Comparing with items available, this was <span class='bold'>{currency(Math.abs(pricedifflastyear))} {pricedifflastyear>0 ? 'more' :' less'} than last year.</span> This was {pricedifflastyear>0 ? 'an' :' a'} <span class='bold'>{pricedifflastyear>0 ? 'increase' :' decrease'} of {percentage(Math.abs(100*pricedifflastyear/totallastyear))}%.</span>
                     </p>    
                 {/if}
             </div>
