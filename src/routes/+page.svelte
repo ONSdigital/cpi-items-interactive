@@ -27,7 +27,6 @@
 	let grouped; // nested items with hierarchy
 	let selected;
 	let checkedOrder= {}; //object to store which order the items are selected in
-	let filter;
 	let pymChild;
 	let w;
 	let mainElementHeight;
@@ -39,19 +38,19 @@
 
 	onMount(async () => {
 			(items = await csv(
-				'./metadata.csv',
+				'https://raw.githubusercontent.com/henryjameslau/cpi-items-actions/main/metadata.csv',
 				autoType
 			)),
 			(avgprice = await csv(
-				'./avgprice.csv',
+				'https://raw.githubusercontent.com/henryjameslau/cpi-items-actions/main/avgprice.csv',
 				autoType
 			)),
 			(monthlygrowth = await csv(
-				'./monthlygrowth.csv',
+				'https://raw.githubusercontent.com/henryjameslau/cpi-items-actions/main/monthlygrowth.csv',
 				autoType
 			)),
 			(annualgrowth = await csv(
-				'./annualgrowth.csv',
+				'https://raw.githubusercontent.com/henryjameslau/cpi-items-actions/main/annualgrowth.csv',
 				autoType
 			));
 
@@ -62,7 +61,7 @@
 			grouped = groups(itemsSorted,d=>d.Category1,d=>d.Category2)
 
 
-			lastmonth=timeParse("%Y-%m-%d %H:%M:%S")(monthlygrowth.columns[monthlygrowth.columns.length-1])
+			lastmonth=timeParse("%Y-%m-%d")(monthlygrowth.columns[monthlygrowth.columns.length-1])
 
 			pymChild = new pym.Child
 
