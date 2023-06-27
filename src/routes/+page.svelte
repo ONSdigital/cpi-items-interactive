@@ -38,19 +38,19 @@
 
 	onMount(async () => {
 			(items = await csv(
-				'https://raw.githubusercontent.com/henryjameslau/cpi-items-actions/main/metadata.csv',
+				'https://raw.githubusercontent.com/ONSvisual/cpi-items-actions/main/metadata.csv',
 				autoType
 			)),
 			(avgprice = await csv(
-				'https://raw.githubusercontent.com/henryjameslau/cpi-items-actions/main/avgprice.csv',
+				'https://raw.githubusercontent.com/ONSvisual/cpi-items-actions/main/avgprice.csv',
 				autoType
 			)),
 			(monthlygrowth = await csv(
-				'https://raw.githubusercontent.com/henryjameslau/cpi-items-actions/main/monthlygrowth.csv',
+				'https://raw.githubusercontent.com/ONSvisual/cpi-items-actions/main/monthlygrowth.csv',
 				autoType
 			)),
 			(annualgrowth = await csv(
-				'https://raw.githubusercontent.com/henryjameslau/cpi-items-actions/main/annualgrowth.csv',
+				'https://raw.githubusercontent.com/ONSvisual/cpi-items-actions/main/annualgrowth.csv',
 				autoType
 			));
 
