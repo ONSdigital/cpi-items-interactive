@@ -53,7 +53,7 @@ function lowercasefirstletter(string) {
         </div>
         <div class='hflex'>
             <p class='s21'>Basket total</p>
-            <p class='bold s21'>{currency(total)}</p>
+            <p class='bold s21'>{total==0 ? 'Unavailable' : currency(total)}</p>
         </div>
 
     </div>
