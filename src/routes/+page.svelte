@@ -16,7 +16,8 @@
 	import pym from "pym.js";
 	import Select from 'svelte-select';
 	import ButtonGroup from '../components/helpers/ButtonGroup.svelte';
-	import Header from '../components/helpers/Header.svelte'
+	import Header from '../components/helpers/Header.svelte';
+	import Notice from '../components/helpers/Notice.svelte';
 	
 	let items; //metadata
 	let itemsSorted
@@ -36,23 +37,42 @@
 	let sortOrder = ["Food and drink"]
 	let searchMode;
 
+	// onMount(async () => {
+	// 		(items = await csv(
+	// 			'https://raw.githubusercontent.com/ONSvisual/cpi-items-actions/main/metadata.csv',
+	// 			autoType
+	// 		)),
+	// 		(avgprice = await csv(
+	// 			'https://raw.githubusercontent.com/ONSvisual/cpi-items-actions/main/avgprice.csv',
+	// 			autoType
+	// 		)),
+	// 		(monthlygrowth = await csv(
+	// 			'https://raw.githubusercontent.com/ONSvisual/cpi-items-actions/main/monthlygrowth.csv',
+	// 			autoType
+	// 		)),
+	// 		(annualgrowth = await csv(
+	// 			'https://raw.githubusercontent.com/ONSvisual/cpi-items-actions/main/annualgrowth.csv',
+	// 			autoType
+	// 		));
+
 	onMount(async () => {
 			(items = await csv(
-				'https://raw.githubusercontent.com/ONSvisual/cpi-items-actions/main/metadata.csv',
+				'./metadata.csv',
 				autoType
 			)),
 			(avgprice = await csv(
-				'https://raw.githubusercontent.com/ONSvisual/cpi-items-actions/main/avgprice.csv',
+				'./avgprice.csv',
 				autoType
 			)),
 			(monthlygrowth = await csv(
-				'https://raw.githubusercontent.com/ONSvisual/cpi-items-actions/main/monthlygrowth.csv',
+				'./monthlygrowth.csv',
 				autoType
 			)),
 			(annualgrowth = await csv(
-				'https://raw.githubusercontent.com/ONSvisual/cpi-items-actions/main/annualgrowth.csv',
+				'./annualgrowth.csv',
 				autoType
 			));
+
 
 			itemsSorted = items.sort(
 		 	(a, b) => sortOrder.indexOf(b['Category1']) - sortOrder.indexOf(a['Category1']) || a['Category1'].toString().localeCompare(b['Category1']) || a['Category2'].toString().localeCompare(b['Category2']) ||a.ITEM_DESC.localeCompare(b.ITEM_DESC)
@@ -90,14 +110,14 @@
 		columns=[
 		{label:"Name (weight or size)",prop:"Name",sort:true,type:"text"},
 		// {label:"Weight or size",prop:"Weight or size",sort:false,type:"text",formatFn:(d)=> d=='null' ? '' : d},
-		{label:"Average price",prop:"Average price",sort:true,type:"number",formatFn:(d)=>'£'+format(',.2f')(d)},
+		{label:"Average price",prop:"Average price",sort:true,type:"number",formatFn:(d)=> d==null ? "Unavailable" : '£'+format(',.2f')(d)},
 		{label:"Annual growth",prop:"Annual growth",sort:true,type:"number",formatFn:(d)=>d==null ? 'Unavailable' : format('.0f')(d)+'%'}
 		]
 	}else{
 		columns= [
 		{label:"Name (weight or size)",prop:"Name",sort:true,type:"text"},
 		// {label:"Weight or size",prop:"Weight or size",sort:false,type:"text",formatFn:(d)=> d=='null' ? '' : d},
-		{label:"Average price",prop:"Average price",sort:true,type:"number",formatFn:(d)=>'£'+format(',.2f')(d)},
+		{label:"Average price",prop:"Average price",sort:true,type:"number",formatFn:(d)=> d==null ? "Unavailable" : '£'+format(',.2f')(d)},
 		{label:"Price last year",prop:"pricelastyear",sort:true,type:"number",formatFn:(d)=>d==null ? 'Unavailable' : '£'+format(',.2f')(d)},
 		{label:"Annual growth",prop:"Annual growth",sort:true,type:"number",formatFn:(d)=>d==null ? 'Unavailable' : format('.0f')(d)+'%'}
 	]
@@ -236,15 +256,21 @@
 						{#each grouped as groups, i}
 							<details open={i==0}>
 							<summary><h2>{groups[0]}</h2>
+
 								<span class="ons-details__icon">
 									<svg class="ons-svg-icon" viewBox="0 0 8 13" xmlns="http://www.w3.org/2000/svg" focusable="false" fill="currentColor"><path d="M5.74,14.28l-.57-.56a.5.5,0,0,1,0-.71h0l5-5-5-5a.5.5,0,0,1,0-.71h0l.57-.56a.5.5,0,0,1,.71,0h0l5.93,5.93a.5.5,0,0,1,0,.7L6.45,14.28a.5.5,0,0,1-.71,0Z" transform="translate(-5.02 -1.59)"></path></svg>
 								</span>	
 								</summary>	
+								{#if groups[0] == "Food and drink" || groups[0] == "Tobacco" }
+								<Notice>
+									<span>Average prices and annual growth are currently unavailable for {groups[0].toLowerCase()}</span>
+								</Notice>
+								{/if}
 								
 							{#each groups[1] as subgroup}
 								<h3>{subgroup[0]}</h3>
 								<div class="hflex subgroup">
-									{#each subgroup[1].filter(e=>!selected.map(e=>+e[0]).includes(e.ITEM_ID)) as item(item.ITEM_ID)}
+									{#each subgroup[1].filter(e=>!selected.map(e=>e[0]).includes(e.ITEM_ID.toString())) as item(item.ITEM_ID)}
 										<div class="item" in:receive="{{key: item.ITEM_ID}}" out:send="{{key: item.ITEM_ID}}">
 	
 											<input type="checkbox" id={item.ITEM_ID} on:change={handleChange} bind:checked={isChecked[item.ITEM_ID]} />
@@ -577,6 +603,10 @@
 		color: #206095;
 	}
 
+	label span{
+		padding-bottom: 6px !important
+	}
+
 
 	h1,h2{
         margin:0;
@@ -712,4 +742,5 @@
 	--ons-color-text-disabled: var(--ons-color-grey-35);
 	--ons-color-border-disabled: var(--ons-color-grey-35);
 }
+
 </style>
