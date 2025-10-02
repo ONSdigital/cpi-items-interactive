@@ -37,41 +37,41 @@
 	let sortOrder = ["Food and drink"]
 	let searchMode;
 
-	// onMount(async () => {
-	// 		(items = await csv(
-	// 			'https://raw.githubusercontent.com/ONSvisual/cpi-items-actions/main/metadata.csv',
-	// 			autoType
-	// 		)),
-	// 		(avgprice = await csv(
-	// 			'https://raw.githubusercontent.com/ONSvisual/cpi-items-actions/main/avgprice.csv',
-	// 			autoType
-	// 		)),
-	// 		(monthlygrowth = await csv(
-	// 			'https://raw.githubusercontent.com/ONSvisual/cpi-items-actions/main/monthlygrowth.csv',
-	// 			autoType
-	// 		)),
-	// 		(annualgrowth = await csv(
-	// 			'https://raw.githubusercontent.com/ONSvisual/cpi-items-actions/main/annualgrowth.csv',
-	// 			autoType
-	// 		));
-
 	onMount(async () => {
 			(items = await csv(
-				'./metadata.csv',
+				'https://raw.githubusercontent.com/ONSdigital/cpi-items-actions/main/metadata.csv',
 				autoType
 			)),
 			(avgprice = await csv(
-				'./avgprice.csv',
+				'https://raw.githubusercontent.com/ONSdigital/cpi-items-actions/main/avgprice.csv',
 				autoType
 			)),
 			(monthlygrowth = await csv(
-				'./monthlygrowth.csv',
+				'https://raw.githubusercontent.com/ONSdigital/cpi-items-actions/main/monthlygrowth.csv',
 				autoType
 			)),
 			(annualgrowth = await csv(
-				'./annualgrowth.csv',
+				'https://raw.githubusercontent.com/ONSdigital/cpi-items-actions/main/annualgrowth.csv',
 				autoType
 			));
+
+	// onMount(async () => {
+	// 		(items = await csv(
+	// 			'./metadata.csv',
+	// 			autoType
+	// 		)),
+	// 		(avgprice = await csv(
+	// 			'./avgprice.csv',
+	// 			autoType
+	// 		)),
+	// 		(monthlygrowth = await csv(
+	// 			'./monthlygrowth.csv',
+	// 			autoType
+	// 		)),
+	// 		(annualgrowth = await csv(
+	// 			'./annualgrowth.csv',
+	// 			autoType
+	// 		));
 
 
 			itemsSorted = items.sort(
